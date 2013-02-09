@@ -1,0 +1,15 @@
+typedef void** (*fp)(void**, void**);
+
+void ** f197(void ** x1, void ** max){  
+  void** moy = (int) max / (int) 2.; 
+  void** newabr = ((fp) ((void **) ((void **) x1[0])[0])) (2,3);
+  void** loop = { 1, 2 } 
+ }
+ 
+ int toto(int a){ a + 4; }
+ 
+ int main(){
+    void ** x = 3;
+    void ** loop = (void * []) { 1, x };
+    printf ("%i\n", (int) loop[1]);
+ }

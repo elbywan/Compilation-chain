@@ -1,0 +1,10 @@
+<src/*> : use_unix, use_camlp5, use_ledit, pkg_menhirLib, use_str
+<src/miniscala/*>: pkg_menhirLib, use_str
+<src> : include
+<src/miniscala>: include
+<src/margarita>: include
+<src/hamlet>: include
+<src/clovis>: include
+<src/willow>: include
+<src/rex>: include
+<*>: use_unix, use_ledit, use_menhir

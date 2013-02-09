@@ -1,0 +1,186 @@
+open ClovisAST
+module S = Identifier.ISet
+
+let compilation_error = Error.global_error "during compilation"
+module Env = GenericEnvironment.Make
+  (struct
+     let raise_error x =
+       compilation_error (Printf.sprintf "%s is unbound."
+                            (Identifier.as_string x))
+   end)
+
+
+let rec translate_pattern p = match p with 
+  | HamletAST.PVar v -> ClovisAST.PVar v
+  | HamletAST.PData (dc,pl) -> let new_pl = List.map (fun p -> translate_pattern p) pl in
+		               ClovisAST.PData (dc,new_pl) 
+  | _ -> compilation_error "Views not supported yet"
+
+let rec getenv_pattern p env = match p with 
+  | HamletAST.PVar v -> Env.bind env v (ClovisAST.Var v)
+  | HamletAST.PData (dc,pl) -> List.fold_left (fun accu p -> (getenv_pattern p accu)) env pl
+  | _ -> compilation_error "Views not supported yet"
+
+let rec getboundvars_pattern p set = match p with 
+  | HamletAST.PVar v -> S.singleton v
+  | HamletAST.PData (dc,pl) -> List.fold_left (fun accu p -> S.union (getboundvars_pattern p accu) accu) set pl
+  | _ -> compilation_error "Views not supported yet"
+
+let rec fv : HamletAST.expression -> S.t = fun e -> match e with
+  | HamletAST.Fun (_,_) -> get_fv S.empty e
+  | _ -> compilation_error "FV Only works on functions."
+
+and get_fv set =
+  fun e -> match e with 
+  | HamletAST.Var x -> 
+      S.singleton x
+  | HamletAST.Int x -> 
+      S.empty
+  | HamletAST.App (e1, e2) -> 
+      let s1 = get_fv set e1 in
+      let s2 = get_fv set e2 in
+      S.union s1 s2
+  | HamletAST.Fun ((x,_), e) -> 
+      S.remove x (get_fv set e)
+  | HamletAST.Prim p -> 
+      S.empty
+  | HamletAST.Fix ((x,_), e) -> 
+      S.remove x (get_fv set e)
+  | HamletAST.LetRec (xs, es, e) -> 
+      (** Liste des variables déclarées par le letrec **)
+      let rec    loop varlist accu = match varlist with
+	| []   -> accu
+	| a::b -> loop b (S.union accu (S.singleton (fst a)))
+      in let rec_vars = loop xs S.empty
+      (** On récupère toutes les variables appelées dans le corps des letrec  **)
+      (** On leur soustrait l'ensemble des variables déclarées dans le letrec **)
+      in let rec loop explist accu = match explist with
+	| []   -> accu
+	| a::b -> let all_vars  = get_fv S.empty a in
+		  let good_vars = S.diff all_vars rec_vars in
+		  loop b (S.union accu good_vars)
+      in let final_vars = loop es set
+      (** On continue dans l'expression associée (par in), et on soustrait les variables déclarées dans le letrec. **)
+      in S.diff (S.union (get_fv S.empty e) final_vars) rec_vars
+  | HamletAST.Tuple es -> 
+       let rec loop x s = match x with 
+	| []   -> s
+	| a::b -> loop b (S.union s (get_fv set a))
+      in loop es set
+  | HamletAST.Match (exp,cl) ->
+    let s = get_fv set exp in
+    let rec loop cl = match cl with
+      | [] -> S.empty
+      | (p,e)::next -> let exclude_vars = getboundvars_pattern p S.empty in
+		       S.union (S.diff (get_fv set e) exclude_vars) (loop next)
+    in S.union s (loop cl)
+  | HamletAST.Data (const,elist) -> 
+    let rec loop elist = match elist with 
+      | [] -> S.empty
+      | e::next -> S.union (get_fv set e) (loop next)
+    in loop elist
+  | HamletAST.ArrayWrite (arr,pos,e) ->
+    S.union (S.union (get_fv set arr) (get_fv set pos)) (get_fv set e)
+  | HamletAST.ArrayRead (arr,pos) ->
+    S.union (get_fv set arr) (get_fv set pos)
+  | HamletAST.Float _ ->
+    S.empty
+  | HamletAST.Annot (e,_) -> 
+    get_fv set e
+
+
+let rec trad env : HamletAST.expression -> ClovisAST.expression =
+ fun e ->
+    match e with
+  | HamletAST.Var x -> 
+      Env.lookup env x
+  | HamletAST.Int x ->
+      ClovisAST.Int x
+  | HamletAST.App (HamletAST.Prim HamletAST.IfZ,
+                   HamletAST.Tuple [ cond; lhs; rhs ]) ->
+    ClovisAST.Apply (ClovisAST.Prim (ClovisAST.IfZ),  (ClovisAST.Tuple [ trad env cond; trad env lhs; trad env rhs ]))
+  (** RAJOUT POUR LE LET **)
+  | HamletAST.App (HamletAST.Fun ((x,_), rhs), lhs) ->
+      ClovisAST.Let ((x, trad env lhs), trad (Env.bind env x (ClovisAST.Var x)) rhs)
+  | HamletAST.App (e1, e2) ->
+      ClovisAST.Apply ((trad env e1),(trad env e2))
+  | HamletAST.Fun ((x,b), e) ->
+      let fvars     = fv (HamletAST.Fun ((x,b), e)) in
+      let env       = S.fold (fun elt s -> if (Env.exists (ClovisAST.Var elt) s) = 0 then (Env.bind s elt (ClovisAST.Lookup elt)) else s) fvars env in 
+      let env       = Env.bind env x (ClovisAST.Var x) in
+      let decl_list = S.fold (fun elt l -> (elt,Env.lookup env elt)::l)       fvars []  in
+      let decl_list = List.rev decl_list in
+      let env       = S.fold (fun elt s -> Env.bind s elt (ClovisAST.Lookup elt)) fvars env in 
+      let env       = Env.bind env x (ClovisAST.Var x) in
+      ClovisAST.Closure(decl_list,x,(trad env e))
+  | HamletAST.Fix ((x,_), e) ->
+      ClovisAST.Fix (x, (trad (Env.bind env x (ClovisAST.Var x)) e))
+  | HamletAST.LetRec (xs, es, e) ->
+      translate_rec env (HamletAST.LetRec (xs, es, e))
+  | HamletAST.Prim p ->
+      ClovisAST.Prim (primitive p)
+  | HamletAST.Tuple es ->
+      let rec loop x accu = match x with 
+	| []   -> List.rev accu
+	| a::b -> loop b ((trad env a)::accu)
+      in ClovisAST.Tuple (loop es [])
+  | HamletAST.Match (exp,cl) ->
+    let rec get_pat_list cl = match cl with 
+      | [] -> []
+      | (p,e)::next -> let new_p  = translate_pattern p  in
+		       let newenv = getenv_pattern p env in
+		       (** VERSION "CLASSIQUE" 
+			(new_p,trad newenv e)::(get_pat_list next) 
+			**)
+		       (** VERSION SPECIALE 
+		       let bound_vars = getboundvars_pattern p S.empty in 
+		       let succ_fun   = S.fold (fun x res -> HamletAST.Fun (x,res)) bound_vars e in **)
+		       let succ_fun   = HamletAST.Fun ((HamletIdentifier.fresh (),None),e) in
+		       (new_p,(trad newenv succ_fun))::(get_pat_list next) 
+    in let plist = (get_pat_list cl) in
+    Match (trad env exp,plist)
+  | HamletAST.Data (const,elist) -> 
+    let rec loop li = match li with
+      | []      -> []
+      | e::next -> (trad env e)::(loop next) 
+    in let new_elist = loop elist in
+    ClovisAST.Data (const, new_elist)
+  | HamletAST.ArrayWrite (arr,pos,e) ->
+    ClovisAST.ArrayWrite (trad env arr, trad env pos, trad env e)
+  | HamletAST.ArrayRead (arr,pos) ->
+    ClovisAST.ArrayRead (trad env arr, trad env pos)
+  | HamletAST.Float f ->
+    Float f
+  | HamletAST.Annot (e,_) -> 
+    trad env e
+    
+
+and primitive = function
+  | HamletAST.Add -> Add
+  | HamletAST.Sub -> Sub
+  | HamletAST.Mul -> Mul
+  | HamletAST.Div -> Div
+  | HamletAST.Proj i -> Proj i
+  | HamletAST.IfZ -> IfZ
+  | HamletAST.AllocArray -> ClovisAST.AllocArray
+  | HamletAST.LessThanInt -> ClovisAST.LessThanInt
+  | HamletAST.LessThanFloat -> ClovisAST.LessThanFloat
+  | HamletAST.DivFloat -> ClovisAST.DivFloat
+  | HamletAST.MulFloat -> ClovisAST.MulFloat
+  | HamletAST.AddFloat -> ClovisAST.AddFloat
+  | HamletAST.SubFloat -> ClovisAST.SubFloat
+
+and translate_rec env e = match e with
+  | HamletAST.LetRec (xs, es, e) ->
+      let rec loop li accu = match li with
+	| []   -> accu
+	| a::b -> loop b (Env.bind accu a (ClovisAST.Var a))
+     in let newenv = loop xs env 
+     in let rec loop li accu env = match li with
+	| []   -> accu
+	| a::b -> loop b ((trad env a)::accu) env
+     in let newexpr = List.rev (loop es [] newenv) 
+     in ClovisAST.LetRec (xs, newexpr, (trad newenv e))
+  | _ -> failwith "Translate rec mal appelé"
+
+let translate exp = trad Env.empty exp

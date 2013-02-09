@@ -1,0 +1,251 @@
+%{
+  open HamletAST
+  open Position
+
+  let parse_error = Error.error "during parsing"
+
+%}
+
+%token<string> ID UID
+%token<int> INT
+%token<float> FLOAT
+%token LET REC PROJ FUN SLASH PLUS MINUS STAR LPAREN RPAREN EQ
+%token SLASHDOT PLUSDOT MINUSDOT STARDOT LBRACKET RBRACKET LBRACE RBRACE
+%token IFZ THEN ELSE COMMA IN FIX AND ARROW DOT VAL LT LTDOT
+%token EOF END ASSIGN PIPE WITH MATCH NEW
+%token TYINT TYFLOAT TYARRAY OF TYPE COLON SARROW
+
+%nonassoc LT LTDOT 
+%left     PLUS MINUS PLUSDOT MINUSDOT
+%left     STAR SLASH STARDOT SLASHDOT
+%right    SARROW
+%nonassoc TYARRAY
+%nonassoc PROJ
+%nonassoc INT ID NEW FLOAT UID
+%nonassoc LPAREN 
+
+%start<HamletAST.declaration list * HamletAST.expression>
+  toplevel_expression 
+
+%start<HamletAST.declaration>
+  toplevel_declaration
+
+%%
+
+toplevel_expression: ds=declaration+ IN e=expression EOF
+{
+  (ds, e)
+}
+| e=expression EOF
+{
+  ([], e)
+}
+| error
+{
+  parse_error (Position.lex_join $startpos $endpos) "Syntax error."
+}
+
+toplevel_declaration: d=declaration EOF
+{
+  d
+}
+| error
+{
+  parse_error (Position.lex_join $startpos $endpos) "Syntax error."
+}
+
+declaration: VAL x=identifier EQ e=expression {
+  DVar (x, e)
+}
+| TYPE x=identifier EQ PIPE? ds=separated_list(PIPE, constructor_declaration) {
+  DType (x, ds)
+}
+
+constructor_declaration: 
+  d=data_constructor OF tys=separated_list(STAR, ty) {
+  (d, tys)
+}
+| d=data_constructor
+{
+  (d, [])
+}
+
+ty: 
+  TYINT
+{
+  TyInt
+}
+| TYFLOAT
+{
+  TyFloat
+}
+| TYARRAY ty=ty
+{
+  TyArray ty
+}
+| lhs=ty SARROW rhs=ty
+{
+  TyArrow (lhs, rhs, Var (HamletIdentifier.fresh ()), HamletIdentifier.fresh ())
+}
+| d=identifier
+{
+  TyADT d
+}
+| LPAREN ts=separated_list(STAR, ty) RPAREN
+{
+  match ts with
+    | [t] -> t
+    | ts -> TyTuple ts
+}
+
+expression: e=expression2 {
+  e
+}
+| e=expression2 COLON ty=ty {
+  Annot (e, ty)
+}
+
+binder: x=identifier {
+  (x, None)
+}
+| LPAREN x=identifier COLON ty=ty RPAREN {
+  (x, Some ty)
+}
+
+expression2: 
+ FUN x=binder ARROW e=expression2
+{
+  Fun (x, e)
+}
+| FIX x=binder DOT e=expression2
+{
+  Fix (x, e)
+}
+| LET x=binder EQ lhs=expression2 IN rhs=expression2
+{
+  ( match x with | (x,None)       ->  App (Fun ((x,None), rhs), lhs)
+	         | (x,Some thing) ->  App (Fun ((x,None), rhs), Annot (lhs, thing)) )
+}
+| LET REC
+  fs=separated_nonempty_list(AND, separated_pair(binder, EQ, expression2))
+  IN
+  rhs=expression2
+{
+  let (xs, es) = List.split fs in
+    LetRec (xs, es, rhs)
+}
+| IFZ cond=expression1 THEN lhs=expression2 ELSE rhs=expression2
+{
+  App (Prim IfZ, 
+       Tuple [ cond; 
+               Fun ((HamletIdentifier.fresh (), None), lhs); 
+               Fun ((HamletIdentifier.fresh (), None), rhs) ])
+}
+| MATCH s=expression WITH PIPE? bs=separated_list(PIPE, branch) END
+{
+  Match (s, bs)
+}
+| e=expression0 LBRACKET idx=expression RBRACKET ASSIGN v=expression1
+{
+  ArrayWrite (e, idx, v)
+}
+| e=expression1 
+{
+  e
+}
+
+expression1: e1=expression1 e2=expression0 
+{
+  App (e1, e2)
+}
+| lhs=expression1 op=binop rhs=expression1
+{
+  App (Prim op, Tuple [ lhs; rhs ])
+}
+| e=expression0 LBRACKET idx=expression RBRACKET
+{
+  ArrayRead (e, idx)
+}
+| d=data_constructor LBRACE es=separated_list(COMMA, expression) RBRACE
+{
+  Data (d, es)
+}
+| e=expression0
+{
+  e
+}
+
+expression0: x=identifier
+{
+  Var x
+}
+| x=INT
+{
+  Int x
+}
+| x=FLOAT
+{
+  Float x
+}
+| d=data_constructor
+{
+  Data (d, [])
+}
+| LPAREN es=separated_list(COMMA, expression) RPAREN
+{
+  match es with
+    | [e] -> e
+    | es -> Tuple es
+}
+| PROJ LPAREN x=INT RPAREN
+{
+  Prim (Proj x)
+}
+| NEW 
+{
+  Prim AllocArray
+}
+
+branch: p=pattern ARROW e=expression 
+{
+  (p, e)
+}
+
+pattern: x=identifier
+{
+  PVar x
+}
+| x=data_constructor LBRACE ps=separated_list (COMMA, pattern) RBRACE
+{
+  PData (x, ps)
+}
+| x=data_constructor
+{
+  PData (x, [])
+}
+| LPAREN e=expression ARROW p=pattern RPAREN
+{
+  PView (e, p)
+}
+
+%inline binop:
+  PLUS     { Add }
+| MINUS    { Sub }
+| STAR     { Mul }
+| SLASH    { Div }
+| LT       { LessThanInt }
+| PLUSDOT  { AddFloat }
+| MINUSDOT { SubFloat }
+| STARDOT  { MulFloat }
+| SLASHDOT { DivFloat }
+| LTDOT    { LessThanFloat }
+
+identifier: x=ID
+{
+  Identifier.mk HamletIdentifier.value_kind x
+}
+
+data_constructor: x=UID
+{
+  Identifier.mk HamletIdentifier.data_constructor_kind x
+}

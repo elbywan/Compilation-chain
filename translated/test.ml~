@@ -1,0 +1,30 @@
+type list = Nil | Cons of int * list 
+let x3 = let rec
+ init = (fun a ->
+  (fun i ->
+   (fun l ->
+     ( match l with 
+     | Nil  -> a 
+        | Cons (x, xs) -> (fun _chunk ->
+        init (a) (i + 1) (xs)) (a.(i) <- x; a) 
+        )
+)))
+ in 
+(fun products ->
+ (fun a ->
+  (fun b ->
+   products (3) (a) (b)) (init (Array.make (3) (0)) (0) (Cons (3, 
+                                                               Cons (
+                                                               2, 
+                                                               Cons (
+                                                               1, Nil )))))) (init (Array.make (3) (0)) (0) (Cons (
+ 1, Cons (2, Cons (3, Nil )))))) ((fun size ->
+ (fun a ->
+  (fun b ->
+   (fun c ->
+    let rec
+     aux = (fun i ->
+      if (fun x -> if x = true then 1 else 0) (i < size) = 0 then begin 
+       (fun x2 -> c) end else begin 
+       (fun x1 -> (fun _chunk -> aux (i + 1)) (c.(i) <- a.(i)  * b.(i) ; c)) end)
+     in aux (0)) (Array.make (size) (0))))))

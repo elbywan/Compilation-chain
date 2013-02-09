@@ -1,0 +1,44 @@
+(* Initialise une matrice de hauteur "height", de largeur "width" et de valeur initiale "value" *)
+let rec init_matrice = fun (height : int) => fun (width : int) => fun value =>
+  new height (new width value)
+in
+
+(* Additionne deux matrices. Les deux matrices doivent avoir les mêmes dimensions. *)
+let add_matrice = fun (m : array (array float)) => fun m2 => fun height => fun width =>
+  let new_matrice = init_matrice height width 0.0 in
+  let rec loop1 = fun (i : int) => fun j =>
+    ifz (width - i) then new_matrice else
+    let z = (new_matrice[i])[j] := (m[j])[i] +. (m2[j])[i] in
+    loop1 (i+1) j
+  in 
+  let rec loop2 = fun (i : int) => 
+    ifz (height - i - 1) then new_matrice
+    else let z = loop1 0 (i+1) in loop2 (i+1)
+  in (loop2 (0-1))
+in
+
+(* Multiplie deux matrices. La hauteur de la première matrice et la largeur de la deuxième doivent être égales. *)
+let mult_matrice = fun (m1 : array (array float)) => fun m2 => fun h1 => fun common => fun w2 =>
+  let new_matrice = init_matrice h1 w2 0.0 in
+  let rec calc_case = fun (pos : int) => fun accu => fun i => fun j =>
+      ifz (common - pos) then accu
+      else calc_case (pos + 1) (accu +. ( (m1[i])[pos] *. (m2[pos])[j] )) i j 
+  in
+  let rec loop1 = fun (i : int) => fun j =>
+    ifz (h1 - i) then new_matrice else
+    let z = (new_matrice[i])[j] := (calc_case 0 0. i j) in
+    loop1 (i+1) j
+  in
+  let rec loop2 = fun (i : int) =>
+    ifz (w2 - i - 1) then new_matrice
+    else let z = loop1 0 (i+1) in loop2 (i+1)
+  in (loop2 (0-1))
+in
+
+let matrice1 = init_matrice 3 2 1. in
+let matrice2 = init_matrice 2 3 2. in
+
+let z = ((matrice1[1])[0] := 5.0) in
+
+mult_matrice matrice1 matrice2 3 2 3
+

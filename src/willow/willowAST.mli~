@@ -1,0 +1,35 @@
+type expression =
+  | Var of var
+  | FVar of fvar
+  | Int of int
+  | Let of var * expression * expression
+  | Call of expression * expression * expression
+  | BlockAlloc of expression list
+  | BlockRead of expression * expression
+  | BlockWrite of expression * expression * expression
+  | Prim of primitive
+  | Float of float
+
+and primitive =
+  | Add
+  | Sub
+  | Mul
+  | Div
+  | IfZ
+  | AddFloat
+  | SubFloat
+  | MulFloat
+  | DivFloat
+  | LessThanInt
+  | LessThanFloat
+  | BlockWrite
+
+and declaration = var * expression
+
+and function_declaration = fvar * var * var * expression
+
+and var = Identifier.t
+
+and fvar = Identifier.t
+
+type program = function_declaration list * expression

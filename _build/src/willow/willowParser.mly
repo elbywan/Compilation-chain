@@ -1,0 +1,155 @@
+%{
+  open WillowAST
+  open Position
+
+  let parse_error = Error.error "during parsing"
+
+%}
+
+%token<string> ID FID
+%token<int> INT
+%token LET SLASH PLUS MINUS STAR LPAREN RPAREN EQ RBRACKET LBRACKET
+%token IFZ THEN ELSE COMMA IN LEFTARROW FUN
+%token EOF
+(** UPDATE ++ **)
+%token<float> FLOAT
+%token SLASHDOT PLUSDOT MINUSDOT STARDOT
+%token LT LTDOT NEW
+
+%nonassoc EQ IN ELSE LEFTARROW
+%left     PLUS MINUS
+%left     STAR SLASH
+%nonassoc LBRACKET LPAREN
+(** UPDATE ++ **)
+%nonassoc LT LTDOT 
+%left     PLUSDOT MINUSDOT
+%left     STARDOT SLASHDOT
+
+%start<WillowAST.expression>
+  toplevel_expression
+
+%start<WillowAST.function_declaration>
+  toplevel_declaration
+
+%start<WillowAST.program>
+  compilation_unit
+
+%%
+
+toplevel_expression: e=expression EOF
+{
+  e
+}
+| error
+{
+  parse_error (Position.lex_join $startpos $endpos) "Syntax error."
+}
+
+toplevel_declaration: d=function_declaration EOF
+{
+  d
+}
+| error
+{
+  parse_error (Position.lex_join $startpos $endpos) "Syntax error."
+}
+
+compilation_unit: p=program EOF
+{
+  p
+}
+| error
+{
+  parse_error (Position.lex_join $startpos $endpos) "Syntax error."
+}
+
+program: fdefs=function_declaration* e=expression
+{
+  (fdefs, e)
+}
+
+function_declaration:
+   FUN f=function_identifier LPAREN env=identifier COMMA x=identifier RPAREN
+    EQ e=expression
+{
+  (f, env, x, e)
+}
+
+expression:
+ x=identifier
+{
+  Var x
+}
+| f=function_identifier
+{
+  FVar f
+}
+| x=INT
+{
+  Int x
+}
+(** UPDATE ++ **)
+| x=FLOAT
+{
+  Float x
+}
+| LET x=identifier EQ lhs=expression IN rhs=expression
+{
+  Let (x, lhs, rhs)
+}
+(** UPDATE ++ **)
+| NEW LPAREN empty=expression COMMA LBRACKET size=expression COMMA init=expression RBRACKET RPAREN
+{
+  Call (Prim AllocArray, BlockAlloc [], BlockAlloc [size; init]) 
+}
+| e=expression LPAREN env=expression COMMA x=expression RPAREN
+{
+  Call (e, env, x)
+}
+| LBRACKET es=separated_list(COMMA, expression) RBRACKET
+{
+  BlockAlloc es
+}
+| e=expression LBRACKET i=expression RBRACKET
+{
+  BlockRead (e, i)
+}
+| e=expression LBRACKET i=expression RBRACKET LEFTARROW v=expression
+{
+  BlockWrite (e, i, v)
+}
+| lhs=expression b=binop rhs=expression
+{
+  Call (Prim b, BlockAlloc [], BlockAlloc [lhs; rhs])
+}
+| IFZ cond=expression THEN lhs=expression ELSE rhs=expression
+{
+  Call (Prim IfZ, BlockAlloc [], BlockAlloc [cond; lhs; rhs])
+}
+| LPAREN e=expression RPAREN
+{
+  e
+}
+
+
+%inline binop:
+  PLUS     { Add }
+| MINUS    { Sub }
+| STAR     { Mul }
+| SLASH    { Div }
+| LT       { LessThanInt }
+| PLUSDOT  { AddFloat }
+| MINUSDOT { SubFloat }
+| STARDOT  { MulFloat }
+| SLASHDOT { DivFloat }
+| LTDOT    { LessThanFloat }
+
+identifier: x=ID
+{
+  Identifier.mk WillowIdentifier.value_kind x
+}
+
+function_identifier: x=FID
+{
+  Identifier.mk WillowIdentifier.value_kind x
+}

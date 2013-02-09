@@ -1,0 +1,16 @@
+(** Comment 
+fun  `zcode (env,x) = x + env[0]
+let z = `zcode in
+z ([2],2)
+**)
+
+let z = 
+  let x = closure { val a = 2 | x => ifz x then closure { | z => 2 }  else closure { val a = lookup a val x = x | z => lookup a + lookup x }} 
+  in x
+in apply z 2
+
+(*
+let rec f = fun x => ifz x then 42 else g (x - 1)
+and g = fun x => f (x - 1)
+in f 4
+*)

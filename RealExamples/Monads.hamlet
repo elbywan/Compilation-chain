@@ -1,0 +1,19 @@
+(*******************)
+(* Test de monades *)
+(*******************)
+
+(* Continuation monad *)
+
+let return = fun a => fun f => f a in
+
+let run = fun a => a (fun x => x) in
+
+let bind = fun m => fun f => fun k => m (fun v => (f v) k) in
+
+
+
+(* MAIN *)
+
+run (bind (return 1) (fun x => return (x+1)))
+
+

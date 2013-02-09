@@ -1,0 +1,12 @@
+fun `f34 (x1, l) = 
+let x35 = [ 0 ] in 
+  let aux = [ `f36, x35 ] in let x39 = x35 [0] <- aux in aux [0] (aux [1], l)
+ 
+fun `f36 (x1, l) = 
+ifz ((0) - (l [0])) + (0) then [ `f37, [  ] ] else ifz ((1) - (l [0])) + (0) then let x = 
+  l [1] in let xs = l [2] in [ `f2, [ `f38, [ x1 [0], xs ] ] ] else 0
+ fun `f38 (x1, x23) = (1) + (x1 [0] [0] (x1 [0] [1], x1 [1])) 
+fun `f37 (x1, x22) = 0 fun `f2 (x1, x3) = x1 
+let x33 = [  ] in 
+let length = [ `f34, x33 ] in 
+length [0] (length [1], [ 1, 1, [ 1, 2, [ 0 ] ] ])

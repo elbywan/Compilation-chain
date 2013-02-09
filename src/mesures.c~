@@ -1,0 +1,164 @@
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string.h>
+
+void print_cmd(char * cmd){
+   printf("-(> Executed from shell : %s\n",cmd);
+}
+
+void exec_cmd(char * cmd){
+   print_cmd(cmd);
+   system(cmd);
+}
+
+char* concatenate(char * c1, char * c2){
+  char * newchar = malloc(sizeof(char*)*(strlen(c1)+strlen(c2)));
+  return strcat(strcat(newchar,c1),c2);
+}
+
+char* chop_extension(char * name){
+   int i = strlen(name) - 1;
+   for(i; i >= 0; i--){
+      if(name[i] == '.') break;
+   }
+   if(i == 0) return name;
+
+   char * newchar = malloc(sizeof(char*) * (i));
+   int j = 0;
+   for(j; j < i; j++){
+	newchar[j] = name[j];
+   }   
+   return newchar;
+}
+
+char* get_filename(char * name){
+   int i = strlen(name) - 1;
+   for(i; i >= 0; i--){
+      if(name[i] == '/') break;
+   }
+   if(i == 0) return name;
+
+   char * newchar = malloc(sizeof(char*) * (strlen(name) - 1 - i));
+   int j = 0;
+   for(j; j < (strlen(name) - 1 - i); j++){
+	newchar[j] = name[i+j+1];
+   }   
+   return newchar;
+}
+
+long getnanotime(){
+   struct timespec tp;
+   clock_gettime(CLOCK_REALTIME, &tp);
+   return tp.tv_nsec;
+}
+
+
+// OCAML ACTIONS 
+// =============
+// IGNORE
+// sh ./compileToCaml.sh
+// TIMED
+// ./toCaml.native -notrace -compile %filename
+
+unsigned long mesureOcaml(char * filename){
+   exec_cmd("sh ./compileToCaml.sh");
+
+   char * cmd = concatenate("./toCaml.native -samename -compile ",filename);
+
+   long time1 = getnanotime();
+   exec_cmd(cmd);
+
+   return (getnanotime() - time1);
+}
+
+// C ACTIONS
+// =========
+// IGNORE
+// make
+// TIMED
+// ./ted --compile --target willow --hamlet %filename
+// IGNORE 
+// mv filename (tronqué) ^ .compiled-willow
+// sh ./compileToC.sh
+// TIMED
+// ./toC.native -samename -compile %filename
+
+unsigned long mesureC(char * filename){
+   long total_time = 0l;
+   long templong; 
+
+   char * ted_cmd = concatenate("./ted --compile --target willow --hamlet ",filename);
+   char * ted_cmd2 = concatenate(ted_cmd," 2> /dev/null");
+   char * willow_name = concatenate(get_filename (chop_extension (filename)),".compiled-willow");
+   char * new_willow_name = concatenate (" ./translated/",willow_name);
+   char * mv_cmd  = concatenate("mv -f ",willow_name);
+   char * mv_cmd2 = concatenate(mv_cmd, new_willow_name);
+   char * rm_cmd  = concatenate("rm -f ",willow_name);
+   char * toC_cmd = concatenate("./toC.native -samename -compile",new_willow_name);
+
+   exec_cmd("make");
+
+   templong = getnanotime();
+   exec_cmd(ted_cmd2);
+   total_time += (getnanotime() - templong);
+   
+   exec_cmd(mv_cmd2);
+   exec_cmd("sh ./compileToC.sh");
+
+   templong = getnanotime();
+   exec_cmd(toC_cmd);
+   total_time += (getnanotime() - templong);
+  
+   exec_cmd(rm_cmd);
+
+   free(ted_cmd); free(ted_cmd2); free(willow_name); free(new_willow_name); free(mv_cmd); free(mv_cmd2); free(rm_cmd); free(toC_cmd);
+
+   return total_time;
+}
+
+
+int main(int argc, char** argv){
+   
+   printf("\n");
+   if(argc < 2){
+	printf("Analyse de performances de TED.\n");
+	printf("===============================\n");
+	printf("Veuillez spécifier un argument.\n");
+	printf("[ Fichier hamlet à compiler ]  \n");
+	printf("\n");
+	exit(1);
+   }
+   char * filename = argv[1];
+
+   printf("\n   MESURE OCAML   ");
+   printf("\n------------------\n");
+   unsigned long camlTime = mesureOcaml(filename);
+   printf("\n------------------\n");
+   printf("\n   MESURE   C     ");
+   printf("\n------------------\n");
+   unsigned long cTime    = mesureC(filename);
+   printf("\n------------------\n");
+
+   char * fastest = "Vers C";
+   if(camlTime < cTime) fastest = "Vers OCaml";
+   unsigned long ecart = camlTime - cTime;
+   if(camlTime < cTime) ecart = -ecart;
+
+   printf("\n\n");
+   printf("================================\n");
+   printf("===   RESULTATS EN NANOSEC   ===\n");
+   printf("================================\n");
+   printf("=  Temps de compilation Ocaml  =\n");
+   printf("   [%li]                        \n",camlTime);
+   printf("=  Temps de compilation C      =\n");
+   printf("   [%li]                        \n",cTime);
+   printf("=  Ecart et plus rapide        =\n");
+   printf("   [%li] [%s]                   \n",ecart,fastest);
+   printf("================================\n");
+   printf("\n");
+
+   return 0; 
+}

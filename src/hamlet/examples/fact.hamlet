@@ -1,0 +1,18 @@
+(*			*)
+
+let rec fact = fun n =>
+    ifz n then 1 else (n * fact (n-1))
+in fact 5
+
+(*			*)
+
+(******{TESTZONE}*******
+
+let a = 2 in
+let b = 3 in
+let x = fun z => 
+    fun t => a + b 
+in let y = fun z => x z
+in y 5 0 
+
+***********************)

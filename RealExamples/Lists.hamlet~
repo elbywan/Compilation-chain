@@ -1,0 +1,55 @@
+type list = Nil | Cons of int * list
+in
+
+(* Longueur d'une liste *)
+let rec length = fun (l : list) =>
+  let rec aux = fun (l : list) =>
+    match l with
+     | Nil => 0
+     | Cons {x, xs} => 1 + aux xs
+    end
+  in aux l
+in 
+
+(* Concaténation de deux listes *)
+let rec concat = fun (l : list) => fun l2 =>
+  let rec aux = fun (l : list) =>
+    match l with
+     | Nil => l2
+     | Cons {x, xs} => Cons {x, aux xs}
+    end
+  in aux l
+in   
+
+(* Crée une liste de contenant tous les entiers de "first" à "last" *)
+let rec create_from = fun (first : int) => fun last =>
+  let rec loop = fun (i : int) => 
+    ifz (last+1 - i) then Nil
+    else Cons {i,(loop (i+1))}
+  in loop first 
+in
+
+(* Mappe une fonction sur une liste *)
+let rec map = fun (l : list) => fun funct =>
+  let rec loop = fun (l : list) =>
+    match l with
+     | Nil => Nil
+     | Cons {x, xs} => Cons {(funct x), loop xs}
+    end
+  in loop l
+in
+
+let rec fold_left = fun (l : list) => fun funct => fun accu =>
+  let rec loop = fun (l : list) => fun acc =>
+    match l with
+     | Nil => acc
+     | Cons {x, xs} => loop xs (funct x acc)
+    end
+  in loop l accu
+in
+
+let list1 = create_from 5  10 in
+let list2 = create_from 15 20 in
+let list3 = (map (concat list1 list2) (fun x => x+1)) in
+let sum   = fold_left (create_from 0 5) (fun x => fun y => x + y) 0 in
+sum + (length list1)

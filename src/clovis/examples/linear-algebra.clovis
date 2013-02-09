@@ -1,0 +1,25 @@
+let rec init = closure { val init = init | a =>
+               closure { val init = lookup init val a = a | i =>
+               closure { val init = lookup init val a = lookup a val i = i | l =>
+               match l with
+               Nil {} => lookup a| 
+               Cons {x, xs} => let _chunk = lookup a [lookup i] := x in 
+                               apply (apply (apply (lookup init) (lookup a)) (lookup i + 1)) (xs)
+end } } }
+in
+let products = closure {  | size =>
+	       closure { val size = size | a =>
+	       closure { val size = lookup size val a = a | b =>
+	       let c = apply (apply (new) (lookup size)) (0) in 
+	       let rec aux = closure { val a = a val size = lookup size val b = b val c = c val aux = aux | i =>
+	       ifz i < lookup size then closure { val c = lookup c | x3 => lookup c }
+	       else			closure { val a = lookup a val i = i val b = lookup b val c = lookup c val aux = lookup aux | x2 =>
+					let _chunk = lookup c [lookup i] := lookup a [lookup i] * lookup b [lookup i] 
+					in apply (lookup aux) (lookup i + 1) } }
+	       in apply (aux) (0) } } } 
+in 
+let a = apply (apply (apply (init) (apply (apply (new) (3)) (0))) (0)) (Cons {
+1, Cons {2, Cons {3, Nil {}}}}) in 
+let b = apply (apply (apply (init) (apply (apply (new) (3)) (0))) (0)) (Cons {
+3, Cons {2, Cons {1, Nil {}}}}) in 
+apply (apply (apply (products) (3)) (a)) (b)

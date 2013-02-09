@@ -1,0 +1,29 @@
+type list = Nil | Cons of int * list
+in
+
+let rec init = fun (a:array int) => fun i => fun l =>
+  match l with
+  | Nil => a
+  | Cons {x, xs} => 
+    let _chunk = 
+       a[i] := x
+    in
+       init a (i + 1) xs
+  end
+in
+let products = fun size => fun a => fun b =>
+  let c = new size 0 in
+  let rec aux = fun (i : int) => 
+     ifz (i < size) then
+       c
+     else 
+       let _chunk = 
+         c[i] := a[i] * b[i]
+       in
+       aux (i + 1)
+  in
+     aux 0
+in
+let a = init (new 3 0) 0 (Cons {1, Cons {2, Cons {3, Nil}}}) in
+let b = init (new 3 0) 0 (Cons {3, Cons {2, Cons {1, Nil}}}) in
+   products 3 a b

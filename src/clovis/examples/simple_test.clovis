@@ -1,0 +1,31 @@
+(*
+let rec x = closure { val x = x val y = y | z => z + (apply lookup y 2) }
+and     y = closure { val y = y val x = x | z => z } 
+in
+(* Fonction somme :
+   let rec A x -> if x = 1 -> 1 else -> x + A (x-1) *)
+let rec x = closure { val x = x val y = y | z => 
+      ifz z-1 then ( closure { val x = closure { | x1 => 1 } | x1 => apply x 1 } ) 
+      else (closure { val z = z val x = lookup x val y = lookup y | x2 => lookup z + apply lookup x (apply lookup y lookup z-1) }) }
+and     y = closure { val x = x val y = y | z => z }
+in (apply x 10, apply x 20)
+
+let x = 
+  let y = closure { val x = 3 | z => z }
+  in y
+in apply x 3
+*)
+(*
+let x = closure {  			     | a =>
+	closure { val a = a 		     | b =>
+	closure { val a = lookup a val b = b | c =>
+	let rec test = 
+	  closure { val a = lookup a val b = lookup b val c = c val test = test | i =>
+	  lookup a + lookup b + lookup c }
+	in apply (test) (0) } } } 
+in apply (apply (apply (x) (1)) (2)) (3)
+*)
+let x = closure { | a => 
+	let rec test = closure { val a = a | c => lookup a }
+	in apply test a }
+in apply x 2

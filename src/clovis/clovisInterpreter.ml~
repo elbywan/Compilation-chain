@@ -1,0 +1,299 @@
+open ClovisAST
+
+module Env : sig
+
+  type t
+
+  val empty : t
+
+  type closed_value =
+    | CVInt     of int
+    | CVFloat   of float
+    | CVArray   of closed_value array
+    | CVTuple   of closed_value list
+    | CVClosure of t * var * code
+    | CVData    of data_constructor * closed_value list
+
+  and code =
+    | Expression    of expression
+    | PrimitiveCode of (closed_value -> closed_value)
+
+  val bind_value      : var -> closed_value -> t -> t
+  val change_value    : var -> closed_value -> t -> unit
+  val lookup_value    : var -> t -> closed_value
+
+  val show : t -> string
+  val show_closed_value : closed_value -> string
+
+  val is_empty : t -> bool
+
+end = struct
+
+  type t = (var * closed_value ref) list
+
+  and closed_value =
+    | CVInt     of int
+    | CVFloat   of float
+    | CVArray   of closed_value array
+    | CVTuple   of closed_value list
+    | CVClosure of t * var * code
+    | CVData    of data_constructor * closed_value list
+
+  and code =
+    | Expression    of expression
+    | PrimitiveCode of (closed_value -> closed_value)
+
+  let rec show_closed_value = function
+    | CVInt x -> string_of_int x
+    | CVFloat f -> string_of_float f
+    | CVArray arr ->  
+	"(" ^ String.concat ", " (Array.to_list (Array.map show_closed_value arr)) ^ ")"
+    | CVTuple vs -> 
+        "(" ^ String.concat ", " (List.map show_closed_value vs) ^ ")"
+    | CVClosure _ ->
+      "<abstraction>"
+    | CVData (const, closed_value) -> "Data{"^(Identifier.as_string const)^"}:["^ String.concat ", " (List.map show_closed_value closed_value) ^"]"
+
+  let show env =
+    String.concat ";"
+      (List.map (fun (x, v) -> Identifier.as_string x ^ ": " ^
+                 show_closed_value !v)
+         env)
+
+  let empty = []
+
+  let bind_value x v env =
+    (x, ref v) :: env
+
+  let lookup_value x env =
+    ! (List.assoc x env)
+
+  let change_value x v env =
+    (List.assoc x env) := v
+
+  let is_empty env = match env with
+    | [] -> true
+    | _ -> false
+
+end
+
+let interpretation_error =  Error.global_error "during interpretation"
+
+let mk_closure env x e =
+  Env.CVClosure (env, x, e)
+
+(** MODIFICATIONS **)
+let fix_closure x = function
+  | (Env.CVClosure (env, y, e)) ->
+      let c = Env.CVClosure (env, y, e) in
+        try Env.change_value x c env;
+	    c
+	with Not_found -> c
+  | _ ->
+      interpretation_error "Only closures can be recursive."
+
+let lookup where x env =
+  try
+    Env.lookup_value x env
+  with Not_found ->
+    interpretation_error
+      (Printf.sprintf "The variable `%s' is unbound %s."
+         (Identifier.as_string x)
+         where
+      )
+
+let rec check_match cval pattern = match pattern with
+  | PVar var -> true
+  | PData (const,plist) -> ( match cval with 
+			   | Env.CVData (cst,clvl) -> if cst = const then begin 
+						      (List.fold_left2 (fun accu c1 c2 -> if accu = false then false else (check_match c1 c2)) true clvl plist)
+						      end
+					              else false
+			   | _ -> false )
+  | PView (_,_) -> interpretation_error "Views not supported (yet...).\n"
+
+let rec compare_matching cval pattern env = match pattern with 
+  | PVar var -> Env.bind_value var cval env
+ (* match cval with Env.CVar x -> true | _ -> false *)
+ (* match Cons (a,list) with | Cons b,l -> *)
+  | PData (const,plist) -> (match cval with 
+			   | Env.CVData (cst,clvl) -> if cst = const then begin 
+						  (List.fold_left2 (fun accu c1 c2 -> (compare_matching c1 c2 accu)) env clvl plist)
+						  end
+					          else Env.empty
+			   | _ -> Env.empty )
+  | PView (_,_) -> interpretation_error "Views not supported (yet...).\n"
+
+let rec eval_expression env lenv e =
+  if !Settings.debug then 
+    Printf.eprintf "[Clovis-Eval]: %s | %s |- %s\n"
+      (Env.show env)
+      (Env.show lenv)
+      (Misc.FormatUtils.as_string ClovisPrinter.expression e);
+  match e with
+  | Var x ->
+      lookup "@ Env" x env
+  | Lookup x ->
+      lookup "@ Local env" x lenv
+  | Int x ->
+      Env.CVInt x
+  | Apply (f, x) ->
+      let cls = eval_expression env lenv f in
+      let v   = eval_expression env lenv x in
+      apply_closure cls v
+  | Let ((x, e1), e2) ->
+      (* Inversion de e1 et e2 ??
+	 Modification dans le parser.mly *)
+      let newenv = Env.bind_value x (eval_expression env lenv e1) env in
+      eval_expression newenv lenv e2
+  | Closure (ds, x, e) ->
+      let rec loop declarlist accu = match declarlist with
+	| []       -> accu
+	| (v,e)::b -> loop b (Env.bind_value v (eval_expression env lenv e) accu)
+      in let fun_env = loop ds Env.empty
+      in mk_closure fun_env x (Env.Expression e)
+  | Prim p ->
+      primitive p
+  | Fix (x, e) ->
+      fix_closure x (eval_expression (Env.bind_value x (Env.CVInt 0) env) lenv e)
+  | Tuple (es) ->
+       let rec loop li accu = match li with
+	| []    -> Env.CVTuple (List.rev accu)
+	| a::b  -> loop b ((eval_expression env lenv a)::accu)
+      in loop es []
+  | LetRec (xs, es, e) ->
+      let rec loop varlist accuenv = match varlist with
+	 | []   -> accuenv
+	 | a::b -> loop b (Env.bind_value a (Env.CVInt 0) accuenv)
+      in let newenv = loop xs env 
+      in let chg_val x e = 
+	 let evaluation = (fix_closure x (eval_expression newenv lenv e))
+	 in Env.change_value x evaluation newenv
+      in List.iter2 chg_val xs es;
+	 List.iter (fun x -> let cls = lookup "@ Recenv" x newenv in match cls with 
+			      | (Env.CVClosure (env, y, e)) ->
+				 List.iter (fun x -> try (Env.change_value x (lookup "@ Recenv" x newenv) env) with Not_found -> ()) xs
+			      | _ -> interpretation_error "Only closures can be recursive.") xs;
+      eval_expression newenv lenv e
+   | Match (exp,cl) ->
+    let eval = eval_expression env lenv exp in
+    let rec loop cl = 
+    match cl with
+      | []             -> interpretation_error "Unable to match expression.\n"
+      | (patt,e)::next -> let newenv    = (compare_matching eval patt env) in
+			  let isMatched = (check_match eval patt )         in 
+			  if isMatched then (eval_expression newenv lenv (Apply (e, ClovisAST.Int 0))) else (loop next)
+    in loop cl
+  | ArrayWrite (arr,pos,e) ->
+    let eval   = eval_expression env lenv arr in
+    let posint = match(eval_expression env lenv pos) with
+      | Env.CVInt i -> i
+      | _ -> interpretation_error "Array[write] pos can only be int.\n"
+    in (
+    match eval with 
+      | Env.CVArray a -> a.(posint) <- (eval_expression env lenv e); Env.CVArray a
+      | _ -> interpretation_error "Only arrays can be written.\n" )
+  | ArrayRead  (arr,pos) ->
+    let eval   = eval_expression env lenv arr in
+    let posint = match(eval_expression env lenv pos) with
+      | Env.CVInt i -> i
+      | _ -> interpretation_error "Array[read] pos can only be int.\n"
+    in (
+    match eval with 
+      | Env.CVArray a -> a.(posint) 
+      | _ -> interpretation_error "Only arrays can be read.\n" )
+  | Data (const,elist) ->
+      Env.CVData (const, List.map (fun x -> eval_expression env lenv x) elist)
+  | Float f ->
+      Env.CVFloat f
+
+and apply_closure closure v =
+  match closure with
+    | Env.CVClosure (env, x, Env.Expression e) ->
+	let new_env = (Env.bind_value x v env) in
+	eval_expression new_env env e
+    | Env.CVClosure (_, _, Env.PrimitiveCode e) ->
+        e v
+    | _ -> interpretation_error "Only closures can be applied."
+
+and primitive =
+  let mk_primitive f =
+    mk_closure Env.empty (ClovisIdentifier.fresh ()) (Env.PrimitiveCode f)
+  in
+    function
+      | Add -> mk_primitive (lift2 ( + ))
+      | Sub -> mk_primitive (lift2 ( - ))
+      | Mul -> mk_primitive (lift2 ( * ))
+      | Div -> mk_primitive (lift2 ( / ))
+      | Proj i ->
+          mk_primitive
+            (fun t ->
+               match t with
+                 | Env.CVTuple ts -> List.nth ts i
+                 | _ -> interpretation_error "Projection only work on tuples.")
+      | IfZ ->
+          mk_primitive
+            (fun t ->
+               match t with
+                 | Env.CVTuple [ cond; lhs; rhs ] ->
+                     (match cond with
+                       | Env.CVInt 0 ->
+                           apply_closure lhs (Env.CVInt 0)
+                       | Env.CVInt _ ->
+                           apply_closure rhs (Env.CVInt 0)
+                       | _ -> interpretation_error
+                           "Tests only work on integers.")
+                 | _ -> assert false (* By syntax. *))
+      | AllocArray ->
+	  (** app(x,app(y,arr(x,y))) **)
+	  mk_primitive 
+	    (fun t -> match t with
+		| Env.CVInt size -> 
+		    mk_primitive (fun e -> Env.CVArray (Array.make size e))
+		| _ -> interpretation_error "Array size can only be evaluated as int.\n")
+      | LessThanInt ->
+	  mk_primitive (lift3 ( < ))
+      | LessThanFloat ->
+	  mk_primitive (lift3_float ( < ))
+      | DivFloat ->
+	  mk_primitive (lift2_float ( /. ))
+      | MulFloat ->
+	  mk_primitive (lift2_float ( *. ))
+      | AddFloat ->
+	  mk_primitive (lift2_float ( +. ))
+      | SubFloat ->
+	  mk_primitive (lift2_float ( -. ))
+and lift2 f v = 
+  match v with
+    | Env.CVTuple [Env.CVInt x; Env.CVInt y] -> Env.CVInt (f x y)
+    | _ -> interpretation_error 
+        "Expecting two integers in arithmetic operation"
+and lift2_float f v = 
+  match v with
+    | Env.CVTuple [Env.CVFloat x; Env.CVFloat y] -> Env.CVFloat (f x y)
+    | _ -> interpretation_error 
+        "Expecting two floats in arithmetic operation"
+and lift3 f v = 
+  match v with
+    | Env.CVTuple [Env.CVInt x; Env.CVInt y] -> Env.CVInt (if (f x y) then 1 else 0)
+    | _ -> interpretation_error 
+        "Expecting two integers in arithmetic operation"
+and lift3_float f v = 
+  match v with
+    | Env.CVTuple [Env.CVFloat x; Env.CVFloat y] -> Env.CVInt (if (f x y) then 1 else 0)
+    | _ -> interpretation_error 
+        "Expecting two floats in arithmetic operation"
+
+and eval_declaration env lenv (x, e) =
+  let v = eval_expression env lenv e in
+    (Env.bind_value x v env, v)
+
+and env_from_declaration out_env out_lenv env (x, e) =
+  Env.bind_value x (eval_expression out_env out_lenv e) env
+
+let eval =
+  let env = ref Env.empty in
+    fun (runtime : RuntimeSystem.t) e ->
+      let env', v = eval_declaration !env Env.empty e in
+        env := env';
+        runtime, [Env.show_closed_value v]

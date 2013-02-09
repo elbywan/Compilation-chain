@@ -1,0 +1,36 @@
+(*
+let rec
+ length = closure {  | l =>
+  let rec
+   aux = closure { val aux = aux | l =>
+    match l with Nil {} => 0| Cons {x, xs} => 1 + apply (lookup aux) (xs)
+end }
+   in apply (aux) (l) } in 
+apply (length) (Cons {1, Cons {2, Nil {}}})
+*)
+(*
+let rec
+ length = closure {  | l =>
+  let rec
+   aux = closure { val aux = aux | l =>
+    match l with
+     Nil {} => 0| 
+     Cons {x, xs} => closure { val aux = lookup aux | xs =>
+                      closure { val aux = lookup aux val xs = xs | x =>
+                       1 + apply (lookup aux) (lookup xs) } }
+end }
+   in apply (aux) (l) } in 
+apply (length) (Cons {1, Cons {2, Nil {}}})
+*)
+
+let rec
+ length = closure {  | l =>
+  let rec
+   aux = closure { val aux = aux | l =>
+    match l with
+     Nil {} => closure {  | x3 => 0 }| 
+     Cons {x, xs} => closure { val aux = lookup aux val xs = xs | x4 =>
+                      1 + apply (lookup aux) (lookup xs) }
+end }
+   in apply (aux) (l) } in 
+apply (length) (Cons {1, Cons {2, Nil {}}})

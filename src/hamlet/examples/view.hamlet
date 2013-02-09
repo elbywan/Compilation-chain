@@ -1,0 +1,15 @@
+let rec view = fun jl =>
+  match jl with
+  | JNil => Nil
+  | JCons {x, xs} => Cons {x, xs}
+  | JJoin {(view => Nil), xs} => view xs
+  | JJoin {(view => Cons {x, xs}), ys} => Cons {x, JJoin {xs, ys}}
+  end
+in
+let rec length = fun jl => 
+  match jl with
+  | (view => Nil) => 0
+  | (view => Cons {x, xs}) => 1 + length xs
+  end
+in
+  length (JJoin {JCons {1, JCons {2, JNil}}, JCons {3, JCons {4, JNil}}})

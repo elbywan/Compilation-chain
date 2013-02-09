@@ -1,0 +1,32 @@
+(*
+let rec x = fun z => ifz (z - (y 1)) then 1 else z+(x (z-1)) 
+and     y = fun z => z
+in (x 10, x 20)
+*)
+(*
+let x = Cons {1,Cons{1,Nil}} in
+let y = Nil in
+let z = Cons {6} in
+match z with 
+  | Nil => 1
+  | Cons {x} => x + 1 
+end
+*)
+(*
+let rec init = fun a => fun i => fun l =>
+  match l with
+  | Nil => a
+  | Cons {x, xs} => 
+    let _chunk = 
+       a[i] := x
+    in
+       init a (i + 1) xs
+  end
+in
+init (new 3 0) 0 (Cons {1, Cons {2, Cons {3, Nil}}})
+*)
+
+let rec testfun = fun a => fun b => fun c => 
+  ifz c then a+b+c
+  else testfun a b (c-1)
+in testfun 1 2 3

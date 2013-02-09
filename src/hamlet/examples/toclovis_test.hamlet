@@ -1,0 +1,29 @@
+(*
+match (Cons {1, Cons {2, Nil}}) with
+  | Nil => 0
+  | Cons {x, xs} => 1
+end
+*)
+
+(*
+let x = new 2 (fun x => x) in
+let x = x[0] := 1 in
+let y = 1 in
+x[y] 2
+*)
+(*
+let x = fun a => fun b => fun c =>
+  let rec test = fun i =>
+    a + b + c
+  in test 0
+in x 1 2 3 
+*)
+
+let rec
+ length = closure {  | l =>
+  let rec
+   aux = closure { val aux = aux | l =>
+    match l with Nil {} => 0| Cons {x, xs} => 1 + apply (lookup aux) (xs)
+end }
+   in apply (aux) (l) } in 
+apply (length) (Cons {1, Cons {2, Nil {}}})

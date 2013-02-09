@@ -1,0 +1,108 @@
+(*
+let rec
+ length = closure {  | l =>
+  let rec
+   aux = closure { val aux = aux | l =>
+    match l with
+     Nil {} => closure {  | x3 => 0 }| 
+     Cons {x, xs} => closure { val aux = lookup aux val xs = xs | x4 =>
+                      1 + apply (lookup aux) (lookup xs) }
+end }
+   in apply (aux) (l) } in 
+apply (length) (Cons {1, Cons {2, Nil {}}})
+*)
+
+(*
+fun `f11 (x1, l) = 
+  let x12 = [ 0 ] in 
+  let aux = [ `f13, x12 ] in 
+  let x16 = x12 [0] <- aux in 
+  aux [0] (aux [1], l)
+ 
+fun `f13 (x1, l) = 
+       ifz ((0) - (l [0])) + (0) 
+	then 0
+  else ifz ((1) - (l [0])) + (0) 
+	then let x  = l [1] in 
+	     let xs = l [2] in 
+	     `f15 ([ x1 [0], xs ],0)
+  else 0
+ 
+fun `f15 (x1, x7) = (1) + (x1 [0] [0] (x1 [0] [1], x1 [1])) 
+fun `f14 (x1, x6) = 0 
+
+let x10 = [  ] in 
+let length = [ `f11, x10 ] in 
+length [0] (length [1], [ 1, 1, [ 1, 2, [ 0 ] ] ])
+*)
+
+(*
+fun `f11 (x1, l) = 
+  let x12 = [ 0 ] in 
+  let aux = [ `f13, x12 ] in let x16 = x12 [0] <- aux 
+  in aux [0] (aux [1], l)
+ 
+fun `f13 (x1, l) = 
+  ifz ((0) - (l [0])) + (0) then 
+      [ `f14, [  ] ] 
+  else ifz ((1) - (l [0])) + (0) then 
+      let x = l [1] in 
+      let xs = l [2] in 
+      [ `f15, [ x1 [0], xs ] ] 
+  else 0
+ 
+fun `f15 (x1, x7) = (1) + (x1 [0] [0] (x1 [0] [1], x1 [1])) 
+fun `f14 (x1, x6) = 0 
+
+let x10 = [  ] in 
+let length = [ `f11, x10 ] in 
+length [0] (length [1], [ 1, 1, [ 1, 2, [ 0 ] ] ])
+
+
+*)
+(*
+let rec
+ length = closure {  | l =>
+  let rec
+   aux = closure { val aux = aux | l =>
+    match l with
+     Nil {} => 0| 
+     Cons {x, xs} => closure { val aux = lookup aux | xs =>
+                      closure { val aux = lookup aux val xs = xs | x =>
+                       1 + apply (lookup aux) (lookup xs) } }
+end }
+   in apply (aux) (l) } in 
+apply (length) (Cons {1, Cons {2, Nil {}}})
+*)
+(*
+fun `f7 (x1, l) = 
+  let x8 = [ 0 ] in 
+  let aux = [ `f9, x8 ] in 
+  let x12 = x8 [0] <- aux in 
+  aux [0] (aux [1], l)
+ 
+fun `f9 (x1, l) = 
+       ifz ((0) - (l [0])) + (0) then 0 
+  else ifz ((1) - (l [0])) + (0) then [ `f10, [ x1 [0] ] ] 
+  else 0
+ 
+fun `f10 (x1, xs) = [ `f11, [ x1 [0], xs ] ] 
+fun `f11 (x1, x) = (1) + (x1 [0] [0] (x1 [0] [1], x1 [1])) 
+
+let x6 = [  ] in 
+let length = [ `f7, x6 ] in 
+length [0] (length [1], [ 1, 1, [ 1, 2, [ 0 ] ] ])
+*)
+
+fun `f13 (x1, l) = 
+let x14 = [ 0 ] in 
+  let aux = [ `f15, x14 ] in let x18 = x14 [0] <- aux in aux [0] (aux [1], l)
+ 
+fun `f15 (x1, l) = 
+ifz ((0) - (l [0])) + (0) then [ `f16, [  ] ] else ifz ((1) - (l [0])) + (0) then let x = 
+  l [1] in let xs = l [2] in [ `f2, [ `f17, [ x1 [0], xs ] ] ] else 0
+ fun `f17 (x1, x9) = (1) + (x1 [0] [0] (x1 [0] [1], x1 [1])) 
+fun `f16 (x1, x8) = 0 fun `f2 (x1, x3) = x1 
+let x12 = [  ] in 
+let length = [ `f13, x12 ] in 
+length [0] (length [1], [ 1, 1, [ 1, 2, [ 0 ] ] ])

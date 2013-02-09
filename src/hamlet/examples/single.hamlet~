@@ -1,0 +1,29 @@
+(*
+let x = fix x. fun y => ifz y then 0 else x (y-1) in
+x 10
+*)
+
+type a = Nil | Cons of int * a
+in
+
+let l = Cons {1, Cons {2, Nil {}}}in
+match l with
+ | Nil {} => 0 
+ | Cons {x, Cons{y,xs}} => xs
+end 
+
+(*
+fun `f9 (x1, x8) = 
+  let x = [ 0, 1, [ 0, 2, [ 1 ] ] ] [1] in 
+  let y = [ 0, 1, [ 0, 2, [ 1 ] ] ] [2] [1] in 
+  let xs = [ 0, 1, [ 0, 2, [ 1 ] ] ] [2] [2] in 
+xs
+fun `f7 (x1, x6) = 0 
+
+ifz ((1) - ([ 0, 1, [ 0, 2, [ 1 ] ] ] [0])) + (0) 
+  then [ `f7, [  ] ] 
+else ifz ((0) - ([ 0, 1, [ 0, 2, [ 1 ] ] ] [0])) + ((((0) - ([ 0, 1, [ 0, 2, [ 1 ] ] ] [2] [0])) + (0)) + (0)) 
+  then [ `f9, [  ] ] 
+else 0
+
+*)

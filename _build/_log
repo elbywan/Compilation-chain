@@ -1,0 +1,166 @@
+### Starting build.
+# Target: src/toCaml.ml.depends, tags: { extension:ml, file:src/toCaml.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/toCaml.ml > src/toCaml.ml.depends # cached
+# Target: src/hamlet/hamlet.ml.depends, tags: { extension:ml, file:src/hamlet/hamlet.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamlet.ml > src/hamlet/hamlet.ml.depends # cached
+# Target: src/hamlet/hamletAST.mli.depends, tags: { extension:mli, file:src/hamlet/hamletAST.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletAST.mli > src/hamlet/hamletAST.mli.depends # cached
+# Target: src/identifier.ml.depends, tags: { extension:ml, file:src/identifier.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/identifier.ml > src/identifier.ml.depends # cached
+# Target: src/atom.mli.depends, tags: { extension:mli, file:src/atom.mli, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/atom.mli > src/atom.mli.depends # cached
+# Target: src/atom.cmi, tags: { byte, compile, extension:mli, file:src/atom.mli, interf, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/atom.cmi src/atom.mli # cached
+# Target: src/misc.mli.depends, tags: { extension:mli, file:src/misc.mli, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/misc.mli > src/misc.mli.depends # cached
+# Target: src/misc.cmi, tags: { byte, compile, extension:mli, file:src/misc.mli, interf, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/misc.cmi src/misc.mli # cached
+# Target: src/identifier.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/identifier.cmo, file:src/identifier.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/identifier.cmo src/identifier.ml # cached
+# Target: src/hamlet/hamletAST.cmi, tags: { byte, compile, extension:mli, file:src/hamlet/hamletAST.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletAST.cmi src/hamlet/hamletAST.mli # cached
+# Target: src/hamlet/hamletIdentifier.ml.depends, tags: { extension:ml, file:src/hamlet/hamletIdentifier.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletIdentifier.ml > src/hamlet/hamletIdentifier.ml.depends # cached
+# Target: src/hamlet/hamletIdentifier.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/hamletIdentifier.cmo, file:src/hamlet/hamletIdentifier.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletIdentifier.cmo src/hamlet/hamletIdentifier.ml # cached
+# Target: src/hamlet/hamletInterpreter.ml.depends, tags: { extension:ml, file:src/hamlet/hamletInterpreter.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletInterpreter.ml > src/hamlet/hamletInterpreter.ml.depends # cached
+# Target: src/error.mli.depends, tags: { extension:mli, file:src/error.mli, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/error.mli > src/error.mli.depends # cached
+# Target: src/position.mli.depends, tags: { extension:mli, file:src/position.mli, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/position.mli > src/position.mli.depends # cached
+# Target: src/position.cmi, tags: { byte, compile, extension:mli, file:src/position.mli, interf, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/position.cmi src/position.mli # cached
+# Target: src/error.cmi, tags: { byte, compile, extension:mli, file:src/error.mli, interf, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/error.cmi src/error.mli # cached
+# Target: src/runtimeSystem.mli.depends, tags: { extension:mli, file:src/runtimeSystem.mli, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/runtimeSystem.mli > src/runtimeSystem.mli.depends # cached
+# Target: src/runtimeSystem.cmi, tags: { byte, compile, extension:mli, file:src/runtimeSystem.mli, interf, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/runtimeSystem.cmi src/runtimeSystem.mli # cached
+# Target: src/hamlet/hamletInterpreter.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/hamletInterpreter.cmo, file:src/hamlet/hamletInterpreter.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletInterpreter.cmo src/hamlet/hamletInterpreter.ml # cached
+# Target: src/hamlet/hamletLexer.mll, tags: { extension:mll, file:src/hamlet/hamletLexer.mll, lexer, ocaml, ocamllex, quiet, traverse }
+/opt/local/bin/ocamllex.opt -q src/hamlet/hamletLexer.mll # cached
+# Target: src/hamlet/hamletLexer.ml.depends, tags: { extension:ml, file:src/hamlet/hamletLexer.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletLexer.ml > src/hamlet/hamletLexer.ml.depends # cached
+# Target: src/extLexing.ml.depends, tags: { extension:ml, file:src/extLexing.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/extLexing.ml > src/extLexing.ml.depends # cached
+# Target: src/extLexing.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/extLexing.cmo, file:src/extLexing.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/extLexing.cmo src/extLexing.ml # cached
+# Target: src/hamlet/hamletParser.mly.depends, tags: { extension:mly, file:src/hamlet/hamletParser.mly, menhir_ocamldep, ocaml, ocamldep, quiet, traverse }
+/opt/local/bin/menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' src/hamlet/hamletParser.mly > src/hamlet/hamletParser.mly.depends # cached
+# Target: src/hamlet/hamletParser.mly, tags: { extension:mly, file:src/hamlet/hamletParser.mly, menhir, ocaml, parser, quiet, traverse }
+/opt/local/bin/menhir --ocamlc 'ocamlfind ocamlc -I src/hamlet -I src -I src/willow -I src/clovis' --infer src/hamlet/hamletParser.mly # cached
+# Target: src/hamlet/hamletParser.mli.depends, tags: { extension:mli, file:src/hamlet/hamletParser.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletParser.mli > src/hamlet/hamletParser.mli.depends # cached
+# Target: src/hamlet/hamletParser.cmi, tags: { byte, compile, extension:mli, file:src/hamlet/hamletParser.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletParser.cmi src/hamlet/hamletParser.mli # cached
+# Target: src/hamlet/hamletLexer.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/hamletLexer.cmo, file:src/hamlet/hamletLexer.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletLexer.cmo src/hamlet/hamletLexer.ml # cached
+# Target: src/hamlet/hamletPrinter.ml.depends, tags: { extension:ml, file:src/hamlet/hamletPrinter.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletPrinter.ml > src/hamlet/hamletPrinter.ml.depends # cached
+# Target: src/hamlet/hamletPrinter.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/hamletPrinter.cmo, file:src/hamlet/hamletPrinter.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletPrinter.cmo src/hamlet/hamletPrinter.ml # cached
+# Target: src/hamlet/hamletTyper.ml.depends, tags: { extension:ml, file:src/hamlet/hamletTyper.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletTyper.ml > src/hamlet/hamletTyper.ml.depends # cached
+# Target: src/genericEnvironment.ml.depends, tags: { extension:ml, file:src/genericEnvironment.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/genericEnvironment.ml > src/genericEnvironment.ml.depends # cached
+# Target: src/genericEnvironment.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/genericEnvironment.cmo, file:src/genericEnvironment.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/genericEnvironment.cmo src/genericEnvironment.ml # cached
+# Target: src/student.ml.depends, tags: { extension:ml, file:src/student.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/student.ml > src/student.ml.depends # cached
+# Target: src/student.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/student.cmo, file:src/student.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/student.cmo src/student.ml # cached
+# Target: src/hamlet/hamletTyper.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/hamletTyper.cmo, file:src/hamlet/hamletTyper.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletTyper.cmo src/hamlet/hamletTyper.ml # cached
+# Target: src/languages.ml.depends, tags: { extension:ml, file:src/languages.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/languages.ml > src/languages.ml.depends # cached
+# Target: src/settings.ml.depends, tags: { extension:ml, file:src/settings.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/settings.ml > src/settings.ml.depends # cached
+# Target: src/settings.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/settings.cmo, file:src/settings.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/settings.cmo src/settings.ml # cached
+# Target: src/languages.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/languages.cmo, file:src/languages.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/languages.cmo src/languages.ml # cached
+# Target: src/syntacticAnalysis.mli.depends, tags: { extension:mli, file:src/syntacticAnalysis.mli, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/syntacticAnalysis.mli > src/syntacticAnalysis.mli.depends # cached
+# Target: src/syntacticAnalysis.cmi, tags: { byte, compile, extension:mli, file:src/syntacticAnalysis.mli, interf, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/syntacticAnalysis.cmi src/syntacticAnalysis.mli # cached
+# Target: src/hamlet/hamlet.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/hamlet.cmo, file:src/hamlet/hamlet.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamlet.cmo src/hamlet/hamlet.ml # cached
+# Target: src/hamlet/OCamlPrinter.ml.depends, tags: { extension:ml, file:src/hamlet/OCamlPrinter.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/OCamlPrinter.ml > src/hamlet/OCamlPrinter.ml.depends # cached
+# Target: src/hamlet/OCamlPrinter.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/hamlet/OCamlPrinter.cmo, file:src/hamlet/OCamlPrinter.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/OCamlPrinter.cmo src/hamlet/OCamlPrinter.ml # cached
+# Target: src/toCaml.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/toCaml.cmo, file:src/toCaml.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/toCaml.cmo src/toCaml.ml # cached
+# Target: src/atom.ml.depends, tags: { extension:ml, file:src/atom.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/atom.ml > src/atom.ml.depends # cached
+# Target: src/atom.cmx, tags: { compile, extension:cmx, extension:ml, file:src/atom.cmx, file:src/atom.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/atom.cmx src/atom.ml # cached
+# Target: src/misc.ml.depends, tags: { extension:ml, file:src/misc.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/misc.ml > src/misc.ml.depends # cached
+# Target: src/misc.cmx, tags: { compile, extension:cmx, extension:ml, file:src/misc.cmx, file:src/misc.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/misc.cmx src/misc.ml # cached
+# Target: src/identifier.cmx, tags: { compile, extension:cmx, extension:ml, file:src/identifier.cmx, file:src/identifier.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/identifier.cmx src/identifier.ml # cached
+# Target: src/hamlet/hamletIdentifier.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamletIdentifier.cmx, file:src/hamlet/hamletIdentifier.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletIdentifier.cmx src/hamlet/hamletIdentifier.ml # cached
+# Target: src/error.ml.depends, tags: { extension:ml, file:src/error.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/error.ml > src/error.ml.depends # cached
+# Target: src/position.ml.depends, tags: { extension:ml, file:src/position.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/position.ml > src/position.ml.depends # cached
+# Target: src/position.cmx, tags: { compile, extension:cmx, extension:ml, file:src/position.cmx, file:src/position.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/position.cmx src/position.ml # cached
+# Target: src/error.cmx, tags: { compile, extension:cmx, extension:ml, file:src/error.cmx, file:src/error.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/error.cmx src/error.ml # cached
+# Target: src/runtimeSystem.ml.depends, tags: { extension:ml, file:src/runtimeSystem.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/runtimeSystem.ml > src/runtimeSystem.ml.depends # cached
+# Target: src/userInput.ml.depends, tags: { extension:ml, file:src/userInput.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/userInput.ml > src/userInput.ml.depends # cached
+# Target: src/stdUserInput.ml.depends, tags: { extension:ml, file:src/stdUserInput.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/stdUserInput.ml > src/stdUserInput.ml.depends # cached
+# Target: src/stdUserInput.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/stdUserInput.cmo, file:src/stdUserInput.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/stdUserInput.cmo src/stdUserInput.ml # cached
+# Target: src/userInput.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:src/userInput.cmo, file:src/userInput.ml, implem, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlc -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/userInput.cmo src/userInput.ml # cached
+# Target: src/stdUserInput.cmx, tags: { compile, extension:cmx, extension:ml, file:src/stdUserInput.cmx, file:src/stdUserInput.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/stdUserInput.cmx src/stdUserInput.ml # cached
+# Target: src/userInput.cmx, tags: { compile, extension:cmx, extension:ml, file:src/userInput.cmx, file:src/userInput.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/userInput.cmx src/userInput.ml # cached
+# Target: src/runtimeSystem.cmx, tags: { compile, extension:cmx, extension:ml, file:src/runtimeSystem.cmx, file:src/runtimeSystem.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/runtimeSystem.cmx src/runtimeSystem.ml # cached
+# Target: src/hamlet/hamletInterpreter.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamletInterpreter.cmx, file:src/hamlet/hamletInterpreter.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletInterpreter.cmx src/hamlet/hamletInterpreter.ml # cached
+# Target: src/extLexing.cmx, tags: { compile, extension:cmx, extension:ml, file:src/extLexing.cmx, file:src/extLexing.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/extLexing.cmx src/extLexing.ml # cached
+# Target: src/hamlet/hamletParser.ml.depends, tags: { extension:ml, file:src/hamlet/hamletParser.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -modules src/hamlet/hamletParser.ml > src/hamlet/hamletParser.ml.depends # cached
+# Target: src/hamlet/hamletParser.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamletParser.cmx, file:src/hamlet/hamletParser.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletParser.cmx src/hamlet/hamletParser.ml # cached
+# Target: src/hamlet/hamletLexer.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamletLexer.cmx, file:src/hamlet/hamletLexer.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletLexer.cmx src/hamlet/hamletLexer.ml # cached
+# Target: src/hamlet/hamletPrinter.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamletPrinter.cmx, file:src/hamlet/hamletPrinter.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletPrinter.cmx src/hamlet/hamletPrinter.ml # cached
+# Target: src/genericEnvironment.cmx, tags: { compile, extension:cmx, extension:ml, file:src/genericEnvironment.cmx, file:src/genericEnvironment.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/genericEnvironment.cmx src/genericEnvironment.ml # cached
+# Target: src/student.cmx, tags: { compile, extension:cmx, extension:ml, file:src/student.cmx, file:src/student.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/student.cmx src/student.ml # cached
+# Target: src/hamlet/hamletTyper.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamletTyper.cmx, file:src/hamlet/hamletTyper.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamletTyper.cmx src/hamlet/hamletTyper.ml # cached
+# Target: src/settings.cmx, tags: { compile, extension:cmx, extension:ml, file:src/settings.cmx, file:src/settings.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/settings.cmx src/settings.ml # cached
+# Target: src/languages.cmx, tags: { compile, extension:cmx, extension:ml, file:src/languages.cmx, file:src/languages.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/languages.cmx src/languages.ml # cached
+# Target: src/syntacticAnalysis.ml.depends, tags: { extension:ml, file:src/syntacticAnalysis.ml, ocaml, ocamldep, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamldep -package menhirLib -modules src/syntacticAnalysis.ml > src/syntacticAnalysis.ml.depends # cached
+# Target: src/syntacticAnalysis.cmx, tags: { compile, extension:cmx, extension:ml, file:src/syntacticAnalysis.cmx, file:src/syntacticAnalysis.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/syntacticAnalysis.cmx src/syntacticAnalysis.ml # cached
+# Target: src/hamlet/hamlet.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/hamlet.cmx, file:src/hamlet/hamlet.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/hamlet.cmx src/hamlet/hamlet.ml # cached
+# Target: src/hamlet/OCamlPrinter.cmx, tags: { compile, extension:cmx, extension:ml, file:src/hamlet/OCamlPrinter.cmx, file:src/hamlet/OCamlPrinter.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -I src/hamlet -I src -I src/willow -I src/clovis -o src/hamlet/OCamlPrinter.cmx src/hamlet/OCamlPrinter.ml # cached
+# Target: src/toCaml.cmx, tags: { compile, extension:cmx, extension:ml, file:src/toCaml.cmx, file:src/toCaml.ml, implem, native, ocaml, pkg_menhirLib, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt -c -package menhirLib -I src -I src/willow -I src/hamlet -I src/clovis -o src/toCaml.cmx src/toCaml.ml # cached
+# Target: src/toCaml.native, tags: { dont_link_with, extension:native, file:src/toCaml.native, link, native, ocaml, pkg_menhirLib, program, quiet, traverse, use_camlp5, use_ledit, use_str, use_unix }
+ocamlfind ocamlopt unix.cmxa str.cmxa -linkpkg -package menhirLib src/atom.cmx src/position.cmx src/error.cmx src/extLexing.cmx src/misc.cmx src/identifier.cmx src/genericEnvironment.cmx src/hamlet/OCamlPrinter.cmx src/hamlet/hamletIdentifier.cmx src/stdUserInput.cmx src/userInput.cmx src/runtimeSystem.cmx src/hamlet/hamletInterpreter.cmx src/hamlet/hamletParser.cmx src/hamlet/hamletLexer.cmx src/hamlet/hamletPrinter.cmx src/student.cmx src/hamlet/hamletTyper.cmx src/settings.cmx src/languages.cmx src/syntacticAnalysis.cmx src/hamlet/hamlet.cmx src/toCaml.cmx -o src/toCaml.native # cached
+# Compilation successful.

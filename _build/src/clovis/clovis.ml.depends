@@ -1,0 +1,1 @@
+src/clovis/clovis.ml: ClovisAST ClovisFromHamlet ClovisIdentifier ClovisInterpreter ClovisLexer ClovisParser ClovisPrinter Hamlet HamletAST HamletTyper Languages Lexing List Misc Printf Str String SyntacticAnalysis

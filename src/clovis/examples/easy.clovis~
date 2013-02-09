@@ -1,0 +1,10 @@
+match Cons {1, Cons {2, Nil {}}} with
+ | Nil {} => 0 
+ | Cons {x, xs} => xs
+end 
+(*
+let x = apply (apply (new) (2)) (closure {  | x => x }) in 
+let x = x [0] := 1 in 
+let y = 1 in 
+apply (x [y]) (2)
+*)

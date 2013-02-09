@@ -1,0 +1,11 @@
+fun `f30 (x1, z) = 
+ifz ((0) - (z [0])) + (0) then let x = z [1] in 
+  [ `f33, [ x ] ] else ifz 0 then let a = z in 
+  [ `f31, [ `f34, [  ] ] ] else 0
+ fun `f34 (x1, x10) = 3 fun `f33 (x1, x9) = x1 [0] fun `f31 (x1, x32) = x1 
+fun `f25 (x1, z) = 
+ifz ((0) - (z [0])) + (0) then let x = z [1] in 
+  [ `f28, [ x ] ] else ifz 0 then let a = z in 
+  [ `f26, [ `f29, [  ] ] ] else 0
+ fun `f29 (x1, x12) = 2 fun `f28 (x1, x11) = x1 [0] fun `f26 (x1, x27) = x1 
+let x = [ `f25, [  ] ] in let y = [ `f30, [  ] ] in x [0] (x [1], [ 0, 2 ])

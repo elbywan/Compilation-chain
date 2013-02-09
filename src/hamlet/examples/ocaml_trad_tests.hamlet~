@@ -1,0 +1,7 @@
+type t = T of int 
+in
+
+let x = fun z => match z with 
+    | T {x} => x 
+    | a => 2 end
+in x (T {2})

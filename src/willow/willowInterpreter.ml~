@@ -1,0 +1,241 @@
+open WillowAST
+
+let interpretation_error =  Error.global_error "during interpretation"
+
+module FunEnv = GenericEnvironment.Make (struct
+                                           let raise_error x = raise Not_found
+                                         end)
+
+module ValEnv = GenericEnvironment.Make (struct
+                                           let raise_error x = raise Not_found
+                                         end)
+
+let lookup what lookup x env =
+  try
+    lookup env x
+  with Not_found ->
+    interpretation_error
+      (Printf.sprintf "The %s `%s' is unbound."
+         what
+         (Identifier.as_string x)
+      )
+
+type value =
+  | VFVar of fvar
+  | VInt of int
+  | VBlock of value array
+  | VUnit
+  | VFloat of float
+
+let print_value v =
+  let rec print level v =
+    if level = 0 then "..." else
+      match v with
+        | VInt x -> string_of_int x
+	| VFloat x -> string_of_float x
+        | VFVar f -> Identifier.as_string f
+        | VUnit -> "()"
+        | VBlock vs ->
+            Printf.sprintf "[%s]"
+              (String.concat ", " (List.map (print (level - 1))
+                                     (Array.to_list vs)))
+  in
+    print 3 v
+
+let lookup_value : var -> value ValEnv.t -> value =
+  lookup "value" ValEnv.lookup
+
+let lookup_function :
+    var -> (var * var * expression) FunEnv.t -> (var * var * expression) =
+  lookup "function" FunEnv.lookup
+
+let show_env env =
+  ValEnv.fold (fun accu x v ->
+                 Printf.sprintf "%s:%s "
+                   (Identifier.as_string x)
+                   (print_value v) ^ accu) env ""
+
+(** Ajouts pratiques pour les blocks. **)
+
+ let as_block v = match v with 
+    | VBlock b -> b
+    | _        -> interpretation_error "Invalid access [block]."
+
+let read_block b i = match i with
+    | VInt i -> (as_block b).(i)
+    | _	     -> interpretation_error "Invalid access [block]."
+
+let write_block b i v =  match i with
+    | VInt i -> (as_block b).(i) <- v
+    | _	     -> interpretation_error "Invalid access [block]."
+  
+(** FIN Ajouts blocks. **)
+
+let rec eval_expression fenv env e : value =
+  if !Settings.debug then
+    Printf.eprintf "[Willow-Eval]: %s |- %s\n%!"
+      (show_env env)
+      (Misc.FormatUtils.as_string WillowPrinter.expression e);
+  match e with
+    | Var x -> 
+        lookup_value x env
+    | FVar f -> 
+        VFVar f
+    | Int i -> 
+        VInt i
+    | Float f -> 
+        VFloat f
+    | Let (x, lhs, rhs) ->
+	let eval = (ValEnv.bind env x (eval_expression fenv env lhs)) in
+        eval_expression fenv eval rhs
+    | Call (Prim IfZ, _, v) ->
+        eval_ifz fenv env v
+    | Call (Prim p, _, v) ->
+        eval_primitive fenv (eval_expression fenv env v) p
+    | Call (f, block, v) ->
+        eval_call fenv (eval_expression fenv env f) (eval_expression fenv env block) (eval_expression fenv env v)
+    | BlockAlloc ts ->
+	let arr = Array.make (List.length ts) (VInt 0) in
+	let rec loop pos li = match li with 
+	  | []   -> ()
+	  | a::b -> arr.(pos) <- (eval_expression fenv env a); loop (pos+1) b
+	in loop 0 ts;
+        VBlock arr
+    | BlockRead (e, i) ->
+        read_block (eval_expression fenv env e) (eval_expression fenv env i)
+    | BlockWrite (e, i, rvalue) ->
+	let block_ptr = (eval_expression fenv env e) in
+        write_block (eval_expression fenv env e) (eval_expression fenv env i) (eval_expression fenv env rvalue); 
+	VBlock (as_block block_ptr) 
+    | Prim _ ->
+	(** Impossible ? **)
+        Student.this_is_your_job ()
+
+(** Evaluation partielle du terme utilisé dans le IFZ. (si on rentre dans le then, on ignore le contenu du else et inversement)
+    Très utile pour le match.
+**)
+and eval_ifz fenv env v = match v with
+  | BlockAlloc (cond::lhs::rhs::[]) -> (
+    let eval_cond = (eval_expression fenv env cond) in
+    match eval_cond with 
+             | VInt 0 ->
+                 let closure = (eval_expression fenv env lhs) in (
+		   (** REND PLUS PERMISSIF *)
+		   closure )
+             | VInt _ ->
+                 let closure = (eval_expression fenv env rhs) in (
+                   (** REND PLUS PERMISSIF *)
+		    closure )
+             | _ -> interpretation_error "Only integers can be tested." )
+  | _ -> interpretation_error "IFZ error."
+  
+
+and eval_primitive fenv args =
+  let as_block v = match v with VBlock b -> b
+    | _ -> interpretation_error "Primitives wait for a block as argument."
+  in
+  let read_block b i = (as_block b).(i) in
+  let read_arg i = read_block args i in
+  let eval_binop op =
+    match read_arg 0, read_arg 1 with
+      | VInt x, VInt y -> VInt (op x y)
+      | _ -> interpretation_error "Arithmetic operations wait for integers."
+  in
+  let eval_binop_float op =
+    match read_arg 0, read_arg 1 with
+      | VFloat x, VFloat y -> VFloat (op x y)
+      | _ -> interpretation_error "Arithmetic operations wait for floats."
+  in
+  let eval_bincomp op = 
+    match read_arg 0, read_arg 1 with
+       | VInt x, VInt y     -> if (op x y) then VInt 1 else VInt 0
+       | _ -> interpretation_error "Arithmetic operations wait for integers."
+  in
+  let eval_bincomp_float op = 
+    match read_arg 0, read_arg 1 with
+      | VFloat x, VFloat y -> if (op x y) then VInt 1 else VInt 0
+      | _ -> interpretation_error "Arithmetic operations wait for floats."
+  in 
+  let eval_alloc_array () = (
+    match read_arg 0, read_arg 1 with
+      | VInt size, v -> let rec loop nb_of_loops = if nb_of_loops = 0 then [] else (v)::(loop (nb_of_loops - 1))
+			in let final_result = loop size in
+			VBlock (Array.of_list final_result)
+      | _ -> interpretation_error "See compilation specs @ NEW keyword.\n" )
+  in 
+    function
+      | Add -> eval_binop ( + )
+      | Sub -> eval_binop ( - )
+      | Mul -> eval_binop ( * )
+      | Div -> eval_binop ( / )
+      | AddFloat -> eval_binop_float ( +. )
+      | SubFloat -> eval_binop_float ( -. )
+      | MulFloat -> eval_binop_float ( *. )
+      | DivFloat -> eval_binop_float ( /. )
+      | LessThanInt   -> eval_bincomp ( < )
+      | LessThanFloat -> eval_bincomp_float ( < )
+      | IfZ -> (** CAPTURE AILLEURS, JAMAIS UTILISE **)
+          (match read_arg 0 with
+             | VInt 0 ->
+                 let closure = read_arg 1 in (
+		   (** REND PLUS PERMISSIF *)
+		   match closure with 
+		   | VBlock b -> 
+		   eval_call fenv
+                   (read_block closure 0)
+                   (read_block closure 1)
+                   VUnit
+                   | _ -> closure )
+             | VInt _ ->
+                 let closure = read_arg 2 in (
+                   (** REND PLUS PERMISSIF *)
+		    match closure with 
+		    | VBlock b -> 
+		    eval_call fenv
+                    (read_block closure 0)
+                    (read_block closure 1)
+                    VUnit
+                    | _ -> closure )
+             | _ -> interpretation_error "Only integers can be tested.")
+      | AllocArray -> eval_alloc_array ()
+
+and eval_call fenv f block v =
+  (match f with
+     | VFVar f -> 
+     (
+         let _fun = lookup_function f fenv in
+	 match _fun with | (_env,_arg,_body) ->
+	 let env = ValEnv.empty in
+	 let env = ValEnv.bind env _env block in
+	 let env = ValEnv.bind env _arg v     in
+	 eval_expression fenv env _body
+     )
+     | _ ->
+         interpretation_error "Only function can be called.")
+
+and eval_function_declaration fenv (f, env, x, body) =
+  FunEnv.bind fenv f (env, x, body)
+
+and eval_program (fdefs, e) =
+  let fenv = List.fold_left eval_function_declaration FunEnv.empty fdefs in
+    eval_expression fenv ValEnv.empty e
+
+type ast =
+    Declaration of function_declaration
+  | Expression of expression
+  | Program of program
+
+let eval =
+  let env = ref FunEnv.empty in
+    fun (runtime : RuntimeSystem.t) ->
+      function
+        | Declaration ((f, _, _, _) as fdef) ->
+            let env' = eval_function_declaration !env fdef in
+              env := env';
+              runtime, [ Printf.sprintf "%s defined." (Identifier.as_string f) ]
+        | Expression e ->
+            let v = eval_expression !env ValEnv.empty e in
+              runtime, [ print_value v ]
+        | Program p ->
+            let v = eval_program p in
+              runtime, [ print_value v ]

@@ -1,0 +1,38 @@
+type abr = Vide | Feuille of float | Noeud of float * abr * abr
+in
+
+(* Ajoute un élément à l'ABR *)
+let rec ajout = fun (a : abr) => fun nb => 
+    match a with
+      | Vide          => Feuille {nb}
+      | Feuille {i}   => ifz (i <. nb) then Noeud {nb,Vide,Feuille{i}} else Noeud {nb,Feuille{i},Vide}
+      | Noeud {i,g,d} => ifz (i <. nb) then Noeud {i,ajout g nb,d} else Noeud {i,g,ajout d nb}
+    end
+in
+ 
+(* Vérifie si un élément est présent dans l'ABR *)
+let rec isIn = fun (a : abr) => fun elem =>
+  match a with
+      | Vide          => 0
+      | Feuille {i}   => ifz (0. <. (i -. elem)) then 1 else 0
+      | Noeud {i,g,d} => ifz ( i <. elem) then isIn g elem else 
+			 ifz (0. <. (i -. elem)) then 1 else
+			 isIn d elem
+  end
+in
+
+(* Crée un arbre équilibré par dichotomie *)
+let rec cree_arbre_equilibre = fun (max : float) => 
+  let moy = (max /. 2.) in
+  let newabr = (ajout Vide moy) in
+  let rec loop = fun (moy:float) => fun a => fun count =>
+    ifz (1. <. count) then a else
+    match a with 
+      | Feuille {i}   => let left  = (loop (moy /. 2.) (Feuille {i -. (moy /. 2.)}) (count/.2.)) in
+			 let right = (loop (moy /. 2.) (Feuille {i +. (moy /. 2.)}) (count/.2.)) in
+			 Noeud {i,left,right}
+      end
+  in loop moy newabr max
+in
+
+cree_arbre_equilibre 10.

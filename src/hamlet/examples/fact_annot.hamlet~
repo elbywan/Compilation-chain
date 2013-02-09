@@ -1,0 +1,44 @@
+(*			
+
+let rec fact = fun n =>
+    ifz n then 1 else (n * fact (n-1))
+in fact 5
+
+			*)
+
+(******{TESTZONE}*******
+
+let a = 2 in
+let b = 3 in
+let x = fun z => 
+    fun t => a + b 
+in let y = fun z => x z
+in y 5 0 
+
+***********************)
+(*
+let x = fun x => 3
+in let y = 4
+in ifz 1 then (x 3) + y
+	 else 1.1
+*)
+
+type x = A of int | B of float | Pair of int * float 
+type list = Nil | Cons of int * list
+in
+
+let tup = (1,1.1) in
+let tab = new 3 0.1 in
+let a = A {2} in 
+let b = B {2.2} in
+let y = Cons {1, Cons {2, Nil}} in
+let (p : (int * float)) = (2,3.0) in
+let q = ifz 2 then a else b in
+proj(1) tup +. 1.5
+
+(*
+let rec x = fun (i:int) => y (i-1) +. 1.0
+    and y = fun (j:int) => ifz j then 5.0 else x (j-1) 
+in let z = fix z. (fun (t:float) => ifz (t <. 5.0) then 0.0 else z (t-.1.0))
+in z (x 11)
+*)

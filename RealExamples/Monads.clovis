@@ -1,0 +1,17 @@
+val x3 = fun return =>
+ fun run =>
+  fun bind => run (bind (return (1)) (fun x => return (x + 1))) (fun m =>
+   fun f => fun k => m (fun v => f (v) (k))) (fun a =>
+  a (fun x => x)) (fun a =>
+ fun f => f (a))
+let return = closure {  | a =>
+ closure { val a = a | f => apply (f) (lookup a) } } in
+let run = closure {  | a => apply (a) (closure {  | x => x }) } in
+let bind = closure {  | m =>
+ closure { val m = m | f =>
+  closure { val f = f val m = lookup m | k =>
+   apply (lookup m) (closure { val f = lookup f val k = k | v =>
+    apply (apply (lookup f) (v)) (lookup k) }) } } }
+in
+apply (run) (apply (apply (bind) (apply (return) (1))) (closure { val return = return | x =>
+ apply (lookup return) (x + 1) }))

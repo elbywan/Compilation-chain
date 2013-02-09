@@ -1,0 +1,5 @@
+fun `f9 (x1, n) = ifz n then [ `f10, [  ] ] else [ `f11, [ x1 [0], n ] ] 
+fun `f11 (x1, x2) = (x1 [1]) * (x1 [0] [0] (x1 [0] [1], (x1 [1]) - (1))) 
+fun `f10 (x1, x3) = 1 
+let x8 = [ 0 ] in 
+let fact = [ `f9, x8 ] in let x12 = x8 [0] <- fact in fact [0] (fact [1], 5)

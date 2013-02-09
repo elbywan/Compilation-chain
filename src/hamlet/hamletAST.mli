@@ -1,0 +1,68 @@
+type expression = 
+  | Var of var
+  | Int of int
+  | Float of float
+  | App of expression * expression
+  | Fun of binder * expression
+  | ArrayRead  of expression * expression
+  | ArrayWrite of expression * expression * expression
+  | Data of data_constructor * expression list
+  | Prim of primitive
+  | Fix of binder * expression
+  | LetRec of binder list * expression list * expression
+  | Tuple of expression list
+  | Match of expression * clause list
+  | Annot of expression * ty
+
+and binder = var * ty option
+
+and clause = pattern * expression
+
+and pattern = 
+  | PVar of var
+  | PData of data_constructor * pattern list
+  | PView of expression * pattern
+
+and primitive = 
+  | Add
+  | Sub
+  | Mul
+  | Div
+  | AddFloat
+  | SubFloat
+  | MulFloat
+  | DivFloat
+  | IfZ
+  | LessThanInt
+  | LessThanFloat
+  | Proj of int
+  | AllocArray
+
+and value = 
+  | VVar   of var
+  | VInt   of int
+  | VFun   of var * expression
+  | VFix   of var * expression
+  | VTuple of value list
+
+and declaration = 
+  | DVar  of var * expression
+  | DType of tyvar * constructor_declaration list
+
+and constructor_declaration = data_constructor * ty list
+
+and ty = 
+  | TyInt
+  | TyFloat
+  | TyArrow of ty * ty * expression * var * (ty Identifier.IMap.t)
+  | TyArray of ty
+  | TyADT   of tyvar
+  | TyObject
+  | TyRecursive of ty * ty
+  | TyTuple of ty list
+
+and var = Identifier.t
+
+and tyvar = Identifier.t
+
+and data_constructor = Identifier.t

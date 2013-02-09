@@ -1,0 +1,14 @@
+let print_ast s =
+  match s with
+    | String s -> s
+    | Ast tc -> Misc.FormatUtils.as_string HamletPrinter.declarations tc
+
+let print_help () = 
+  print_string("\nTranslate an Hamlet file to an Ocaml file\n");
+  print_string("[Syntax] ./toOcaml HamletFile OcamlFileOutput\n\n");
+
+let check_args () = if Array.length Sys.argv < 3 then print_help () else ()
+
+let _ =
+  let ast = Hamlet.parse_file Sys.argv.(1) in
+  print ast

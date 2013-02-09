@@ -1,0 +1,5 @@
+let rec x = (closure { val x = x | n => 
+		ifz (n-1) then closure { val n = n | z => lookup n } 
+		else closure { val x = lookup x val n = n | z => (apply (lookup x) (lookup n - 1)) } 
+		}) 
+in apply x 3

@@ -1,0 +1,13 @@
+type list = Nil | Cons of int * list 
+type toto = Toto of float
+in
+
+let rec length = fun (l : list) =>
+     let rec aux = fun (l : list) =>
+     match l with
+     | Nil => 0
+     | Cons {x, xs} => 1 + aux xs
+     end
+     in aux l
+in 
+ print_int (length (Cons {1, Cons {2, Nil}}))

@@ -1,0 +1,16 @@
+(* Recopié 
+let rec
+  fact = closure { val fact = fact | n =>
+    ifz n then closure {  | x3 => 1 } else
+    closure { val n = n val fact = lookup fact | x2 =>
+      lookup n * apply (lookup fact) (lookup n - 1) } } in
+apply (fact) (7)
+*)
+
+(* Compilé *)
+let rec
+ fact = closure { val fact = fact | n =>
+  ifz n then closure {  | x3 => 1 } else
+   closure { val fact = lookup fact val n = n | x2 =>
+    lookup n * apply (lookup fact) (lookup n - 1) } } in
+apply (fact) (5)

@@ -1,0 +1,186 @@
+typedef void** (*fp)(void**,void**);
+
+void** f199(void ** x1, void ** moy);
+
+void ** f197(void ** x1, void ** max){  
+void** moy = ((int) (max)) / ((int) ((int) 2.)); 
+  void** newabr = ((fp) ((void **) ((fp) ((void **) ((void **) x1[0])[0])) (((void **) ((void **) x1[0])[1]), (void * []) { 
+                  0 })[0])) (((void **) ((fp) ((void **) ((void **) x1[0])[0])) (((void **) ((void **) x1[0])[1]), (void * []) { 
+                  0 })[1]), moy); 
+  void** x198 = (void * []) { 0 }; 
+  void** loop = (void * []) { f199, x198 }; 
+  void** x205 = x198; x198[0] = loop; 
+  ((fp) ((void **) ((fp) ((void **) ((fp) ((void **) loop[0])) (((void **) loop[1]), moy)[0])) (((void **) ((fp) ((void **) loop[0])) (((void **) loop[1]), moy)[1]), newabr)[0])) (((void **) ((fp) ((void **) ((fp) ((void **) loop[0])) (((void **) loop[1]), moy)[0])) (((void **) ((fp) ((void **) loop[0])) (((void **) loop[1]), moy)[1]), newabr)[1]), max) 
+ } 
+void ** f199(void ** x1, void ** moy){  
+(void * []) { f200, (void * []) { moy, ((void **) x1[0]) } }  } 
+void ** f200(void ** x1, void ** a){  
+(void * []) { f201, (void * []) { a, ((void **) x1[0]), ((void **) x1[1]) } } 
+ } 
+void ** f201(void ** x1, void ** count){  
+if (((int) ((int) 1.)) < ((int) (count)) == 0){ 
+  (void * []) { f202, (void * []) { ((void **) x1[0]) } } } else { (void * []) { 
+                                                                   f203, 
+                                                                   (void * []) { 
+                                                                   ((void **) x1[0]), 
+                                                                   ((void **) x1[1]), 
+                                                                   ((void **) x1[2]), 
+                                                                   count } } } 
+ } 
+void ** f203(void ** x1, void ** x14){  
+if (((int) (((int) (1)) - ((int) (((void **) ((void **) x1[0])[0]))))) + ((int) (0)) == 0){ 
+  void** i = ((void **) ((void **) x1[0])[1]); 
+  (void * []) { f204, 
+                (void * []) { i, ((void **) x1[1]), ((void **) x1[2]), 
+                              ((void **) x1[3]) } } } else { 0 } 
+ } 
+void ** f204(void ** x1, void ** x137){  
+void** left = ((fp) ((void **) ((fp) ((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[0])) (((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[1]), (void * []) { 
+              1, 
+              ((int) (((void **) x1[0]))) - ((int) (((int) (((void **) x1[1]))) / ((int) ((int) 2.)))) })[0])) (((void **) ((fp) ((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[0])) (((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[1]), (void * []) { 
+              1, 
+              ((int) (((void **) x1[0]))) - ((int) (((int) (((void **) x1[1]))) / ((int) ((int) 2.)))) })[1]), ((int) (((void **) x1[3]))) / ((int) ((int) 2.))); 
+  void** right = ((fp) ((void **) ((fp) ((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[0])) (((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[1]), (void * []) { 
+                 1, 
+                 ((int) (((void **) x1[0]))) + ((int) (((int) (((void **) x1[1]))) / ((int) ((int) 2.)))) })[0])) (((void **) ((fp) ((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[0])) (((void **) ((fp) ((void **) ((void **) x1[2])[0])) (((void **) ((void **) x1[2])[1]), ((int) (((void **) x1[1]))) / ((int) ((int) 2.)))[1]), (void * []) { 
+                 1, 
+                 ((int) (((void **) x1[0]))) + ((int) (((int) (((void **) x1[1]))) / ((int) ((int) 2.)))) })[1]), ((int) (((void **) x1[3]))) / ((int) ((int) 2.))); 
+  (void * []) { 2, ((void **) x1[0]), left, right } 
+ } void ** f2(void ** x1, void ** x3){  x1  } 
+void ** f202(void ** x1, void ** x15){  ((void **) x1[0])  } 
+void ** f185(void ** x1, void ** a){  
+(void * []) { f186, (void * []) { a, ((void **) x1[0]) } }  } 
+void ** f186(void ** x1, void ** elem){  
+if (((int) (((int) (0)) - ((int) (((void **) ((void **) x1[0])[0]))))) + ((int) (0)) == 0){ 
+  (void * []) { f187, (void * []) {  } } } else { if (((int) (((int) (1)) - ((int) (((void **) ((void **) x1[0])[0]))))) + ((int) (0)) == 0){ 
+                                                  void** i = ((void **) ((void **) x1[0])[1]); 
+                                                  (void * []) { f2, 
+                                                                (void * []) { 
+                                                                f188, 
+                                                                (void * []) { 
+                                                                i, elem } } } } else { 
+                                                  if (((int) (((int) (2)) - ((int) (((void **) ((void **) x1[0])[0]))))) + ((int) (0)) == 0){ 
+                                                  void** i = ((void **) ((void **) x1[0])[1]); 
+                                                  void** g = ((void **) ((void **) x1[0])[2]); 
+                                                  void** d = ((void **) ((void **) x1[0])[3]); 
+                                                  (void * []) { f2, 
+                                                                (void * []) { 
+                                                                f2, 
+                                                                (void * []) { 
+                                                                f191, 
+                                                                (void * []) { 
+                                                                i, g, d, 
+                                                                ((void **) x1[1]), 
+                                                                elem } } } } } else { 
+                                                  0 } } } 
+ } 
+void ** f191(void ** x1, void ** x136){  
+if (((int) (((void **) x1[0]))) < ((int) (((void **) x1[4]))) == 0){ 
+  (void * []) { f192, 
+                (void * []) { ((void **) x1[1]), ((void **) x1[3]), 
+                              ((void **) x1[4]) } } } else { (void * []) { 
+                                                             f193, 
+                                                             (void * []) { 
+                                                             ((void **) x1[0]), 
+                                                             ((void **) x1[2]), 
+                                                             ((void **) x1[3]), 
+                                                             ((void **) x1[4]) } } } 
+ } 
+void ** f193(void ** x1, void ** x12){  
+if (((int) ((int) 0.)) < ((int) (((int) (((void **) x1[0]))) - ((int) (((void **) x1[3]))))) == 0){ 
+  (void * []) { f194, (void * []) {  } } } else { (void * []) { f195, 
+                                                                (void * []) { 
+                                                                ((void **) x1[1]), 
+                                                                ((void **) x1[2]), 
+                                                                ((void **) x1[3]) } } } 
+ } 
+void ** f195(void ** x1, void ** x10){  
+((fp) ((void **) ((fp) ((void **) ((void **) x1[1])[0])) (((void **) ((void **) x1[1])[1]), ((void **) x1[0]))[0])) (((void **) ((fp) ((void **) ((void **) x1[1])[0])) (((void **) ((void **) x1[1])[1]), ((void **) x1[0]))[1]), ((void **) x1[2])) 
+ } void ** f194(void ** x1, void ** x11){  1  } 
+void ** f192(void ** x1, void ** x13){  
+((fp) ((void **) ((fp) ((void **) ((void **) x1[1])[0])) (((void **) ((void **) x1[1])[1]), ((void **) x1[0]))[0])) (((void **) ((fp) ((void **) ((void **) x1[1])[0])) (((void **) ((void **) x1[1])[1]), ((void **) x1[0]))[1]), ((void **) x1[2])) 
+ } 
+void ** f188(void ** x1, void ** x135){  
+if (((int) ((int) 0.)) < ((int) (((int) (((void **) x1[0]))) - ((int) (((void **) x1[1]))))) == 0){ 
+  (void * []) { f189, (void * []) {  } } } else { (void * []) { f190, 
+                                                                (void * []) { 
+                                                                 } } } 
+ } void ** f190(void ** x1, void ** x8){  0  } 
+void ** f189(void ** x1, void ** x9){  1  } 
+void ** f187(void ** x1, void ** x134){  0  } 
+void ** f2(void ** x1, void ** x3){  x1  } 
+void ** f175(void ** x1, void ** a){  
+(void * []) { f176, (void * []) { ((void **) x1[0]), a } }  } 
+void ** f176(void ** x1, void ** nb){  
+if (((int) (((int) (0)) - ((int) (((void **) ((void **) x1[1])[0]))))) + ((int) (0)) == 0){ 
+  (void * []) { f177, (void * []) { nb } } } else { if (((int) (((int) (1)) - ((int) (((void **) ((void **) x1[1])[0]))))) + ((int) (0)) == 0){ 
+                                                    void** i = ((void **) ((void **) x1[1])[1]); 
+                                                    (void * []) { f2, 
+                                                                  (void * []) { 
+                                                                  f178, 
+                                                                  (void * []) { 
+                                                                  nb, i } } } } else { 
+                                                    if (((int) (((int) (2)) - ((int) (((void **) ((void **) x1[1])[0]))))) + ((int) (0)) == 0){ 
+                                                    void** i = ((void **) ((void **) x1[1])[1]); 
+                                                    void** g = ((void **) ((void **) x1[1])[2]); 
+                                                    void** d = ((void **) ((void **) x1[1])[3]); 
+                                                    (void * []) { f2, 
+                                                                  (void * []) { 
+                                                                  f2, 
+                                                                  (void * []) { 
+                                                                  f181, 
+                                                                  (void * []) { 
+                                                                  ((void **) x1[0]), 
+                                                                  nb, i, g, d } } } } } else { 
+                                                    0 } } } 
+ } 
+void ** f181(void ** x1, void ** x133){  
+if (((int) (((void **) x1[2]))) < ((int) (((void **) x1[1]))) == 0){ 
+  (void * []) { f182, 
+                (void * []) { ((void **) x1[0]), ((void **) x1[1]), 
+                              ((void **) x1[2]), ((void **) x1[3]), 
+                              ((void **) x1[4]) } } } else { (void * []) { 
+                                                             f183, 
+                                                             (void * []) { 
+                                                             ((void **) x1[0]), 
+                                                             ((void **) x1[1]), 
+                                                             ((void **) x1[2]), 
+                                                             ((void **) x1[3]), 
+                                                             ((void **) x1[4]) } } } 
+ } 
+void ** f183(void ** x1, void ** x6){  
+(void * []) { 2, ((void **) x1[2]), ((void **) x1[3]), 
+              ((fp) ((void **) ((fp) ((void **) ((void **) x1[0])[0])) (((void **) ((void **) x1[0])[1]), ((void **) x1[4]))[0])) (((void **) ((fp) ((void **) ((void **) x1[0])[0])) (((void **) ((void **) x1[0])[1]), ((void **) x1[4]))[1]), ((void **) x1[1])) } 
+ } 
+void ** f182(void ** x1, void ** x7){  
+(void * []) { 2, ((void **) x1[2]), 
+              ((fp) ((void **) ((fp) ((void **) ((void **) x1[0])[0])) (((void **) ((void **) x1[0])[1]), ((void **) x1[3]))[0])) (((void **) ((fp) ((void **) ((void **) x1[0])[0])) (((void **) ((void **) x1[0])[1]), ((void **) x1[3]))[1]), ((void **) x1[1])), 
+              ((void **) x1[4]) } 
+ } 
+void ** f178(void ** x1, void ** x132){  
+if (((int) (((void **) x1[1]))) < ((int) (((void **) x1[0]))) == 0){ 
+  (void * []) { f179, (void * []) { ((void **) x1[0]), ((void **) x1[1]) } } } else { 
+  (void * []) { f180, (void * []) { ((void **) x1[0]), ((void **) x1[1]) } } } 
+ } 
+void ** f180(void ** x1, void ** x4){  
+(void * []) { 2, ((void **) x1[0]), (void * []) { 1, ((void **) x1[1]) }, 
+              (void * []) { 0 } } 
+ } 
+void ** f179(void ** x1, void ** x5){  
+(void * []) { 2, ((void **) x1[0]), (void * []) { 0 }, 
+              (void * []) { 1, ((void **) x1[1]) } } 
+ } 
+void ** f177(void ** x1, void ** x131){  (void * []) { 1, ((void **) x1[0]) } 
+ } void ** f2(void ** x1, void ** x3){  x1  } 
+
+int main(){ 
+ void** x174 = (void * []) { 0 }; 
+ void** ajout = (void * []) { f175, x174 }; 
+ void** x207 = x174; x174[0] = ajout; 
+ void** x184 = (void * []) { 0 }; 
+ void** isIn = (void * []) { f185, x184 }; 
+ void** x206 = x184; x184[0] = isIn; 
+ void** x196 = (void * []) { ajout }; 
+ void** cree_arbre_equilibre = (void * []) { f197, x196 }; 
+ ((fp) ((void **) cree_arbre_equilibre[0])) (((void **) cree_arbre_equilibre[1]), (int) 10.) 
+}

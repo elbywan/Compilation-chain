@@ -1,0 +1,158 @@
+open HamletAST
+
+module Env : sig
+  type t
+
+  val empty : t
+
+  type closed_value = 
+    | CVInt      of int
+    | CVTuple    of closed_value list
+    | CVClosure  of t * var * code
+  and code = 
+    | Expression    of expression
+    | PrimitiveCode of (closed_value -> closed_value)
+
+  val bind_value      : var -> closed_value -> t -> t
+  val change_value    : var -> closed_value -> t -> unit
+  val lookup_value    : var -> t -> closed_value
+
+  val show : t -> string
+  val show_closed_value : closed_value -> string
+
+end = struct
+
+  type t = (var * closed_value ref) list
+
+  and closed_value = 
+    | CVInt     of int
+    | CVTuple   of closed_value list
+    | CVClosure of t * var * code
+
+  and code = 
+    | Expression    of expression
+    | PrimitiveCode of (closed_value -> closed_value)
+
+  let rec show_closed_value = function
+    | CVInt x -> string_of_int x
+    | CVTuple vs -> 
+        "(" ^ String.concat ", " (List.map show_closed_value vs) ^ ")"
+    | CVClosure _ ->
+      "<abstraction>"
+
+  let show env = 
+    String.concat ";" 
+      (List.map (fun (x, v) -> Identifier.as_string x ^ ": " ^ 
+                 show_closed_value !v)
+         env)
+
+  let empty = []
+
+  let bind_value x v env = 
+    (x, ref v) :: env
+
+  let lookup_value x env = 
+    ! (List.assoc x env)
+
+  let change_value x v env = 
+    (List.assoc x env) := v
+
+end
+
+let interpretation_error =  Error.global_error "during interpretation"
+
+let mk_closure env x e =
+  Env.CVClosure (env, x, e)
+
+let lookup x env = 
+  try 
+    Env.lookup_value x env
+  with Not_found -> 
+    interpretation_error
+      (Printf.sprintf "The variable `%s' is unbound." (Identifier.as_string x))
+
+let rec eval_expression env e = 
+  match e with
+  | Var x -> 
+      Student.this_is_your_job ()
+  | Int x -> x
+  | App (f, x) ->
+      Student.this_is_your_job ()
+  | Fun (x, e) ->
+      Student.this_is_your_job ()
+  | Prim p -> 
+      Student.this_is_your_job ()
+  | Fix (x, e) ->
+      Student.this_is_your_job ()
+  | Tuple (es) ->
+      Student.this_is_your_job ()
+  | LetRec (xs, es, e) ->
+      Student.this_is_your_job ()
+  | Match _ 
+  | ArrayWrite _
+  | ArrayRead _ 
+  | Data _
+  | Float _ ->
+      Student.this_is_your_job ()
+    
+
+and apply_closure closure v = 
+  match closure with
+    | Env.CVClosure (env, x, Env.Expression e) -> 
+        Student.this_is_your_job ()
+    | Env.CVClosure (_, _, Env.PrimitiveCode e) ->
+        Student.this_is_your_job ()
+    | _ -> interpretation_error "Only closures can be applied."
+
+and primitive =
+  let mk_primitive f = 
+    mk_closure Env.empty (HamletIdentifier.fresh ()) (Env.PrimitiveCode f)
+  in
+    function
+      | Add -> mk_primitive (lift2 ( + ))
+      | Sub -> mk_primitive (lift2 ( - ))
+      | Mul -> mk_primitive (lift2 ( * ))
+      | Div -> mk_primitive (lift2 ( / ))
+      | Proj i ->
+          mk_primitive 
+            (fun t -> 
+               match t with
+                 | Env.CVTuple ts -> List.nth ts i
+                 | _ -> interpretation_error "Projection only work on tuples.")
+      | IfZ ->
+          mk_primitive
+            (fun t ->
+               match t with
+                 | Env.CVTuple [ cond; lhs; rhs ] ->
+                     (match cond with
+                       | Env.CVInt 0 -> 
+                           apply_closure lhs (Env.CVInt 0)
+                       | Env.CVInt _ -> 
+                           apply_closure rhs (Env.CVInt 0)
+                       | _ -> interpretation_error 
+                           "Tests only work on integers.")
+                 | _ -> assert false (* By syntax. *))
+      | AllocArray 
+      | LessThanInt
+      | LessThanFloat
+      | DivFloat
+      | MulFloat
+      | AddFloat
+      | SubFloat -> 
+	Student.this_is_your_job ()
+and lift2 f v = 
+  match v with
+    | Env.CVTuple [Env.CVInt x; Env.CVInt y] -> Env.CVInt (f x y)
+    | _ -> interpretation_error 
+        "Expecting two integers in arithmetic operation"
+
+let eval_declaration env (x, e) = 
+  let v = eval_expression env e in
+    (Env.bind_value x v env, v)
+
+let eval =
+  let env = ref Env.empty in
+    fun (runtime : RuntimeSystem.t) e ->
+      let env', v = eval_declaration !env e in
+        env := env';
+        runtime, [Env.show_closed_value v]
